@@ -1,0 +1,27 @@
+{
+  "name": "onecore",
+  "version": "0.0.7",
+  "description": "core",
+  "main": "./lib/index.js",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build:lib": "tsc",
+    "clean:lib": "rimraf lib"
+  },
+  "devDependencies": {
+    "tslint": "5.10.0",
+    "typescript": "^3.3.3333"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/common-ts/core"
+  },
+  "keywords": [
+    "one",
+    "core",
+    "onecore"
+  ]
+}

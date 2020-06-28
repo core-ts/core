@@ -10,8 +10,6 @@ export {LocaleStringFormatter} from './formatter';
 export {Type, Format} from './metadata';
 export {Model} from './metadata';
 export {Attribute} from './metadata';
-export {MetaModel} from './metadata';
-export {MetaModelBuilder} from './metadata';
 
 export {CacheService} from './cache';
 export {SyncCacheService} from './cache';

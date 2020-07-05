@@ -11,19 +11,19 @@ export interface Locale {
   currencyPattern: number;
   currencySample?: string;
 }
-  
+
 export interface StringFormatter<T> {
   format(obj: T): string;
 }
 export interface LocaleStringFormatter<T> {
   format(obj: T, locale: Locale): string;
 }
-  
+
 export interface Formatter<T> {
   format(obj: T): T;
-}  
+}
 export interface LocaleFormatter<T> {
-  format(obj: T, locale: Locale): string;
+  format(obj: T, locale: Locale): T;
 }
 
 export interface Mapper<T, K> {

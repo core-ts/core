@@ -6,6 +6,7 @@ export enum Type {
   Number = 'number',
   Integer = 'integer',
   String = 'string',
+  Text = 'text',
 
   Object = 'object',
   Array = 'array',

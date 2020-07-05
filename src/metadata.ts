@@ -42,7 +42,7 @@ export interface Attribute {
   format?: Format;
   required?: boolean;
   defaultValue?: any;
-  primaryKey?: boolean;
+  key?: boolean;
   unique?: boolean;
   noinsert?: boolean;
   noupdate?: boolean;

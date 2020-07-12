@@ -40,7 +40,6 @@ export interface SearchModel {
   firstLimit?: number;
   fields?: string[];
   sort?: string;
-  sortType?: string;
   currentUserId?: string;
 
   keyword?: string;

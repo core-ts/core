@@ -35,11 +35,11 @@ export interface NumberRange {
 }
 
 export interface SearchModel {
-  pageIndex: number;
-  pageSize: number;
-  initPageSize?: number;
+  page: number;
+  limit: number;
+  firstLimit?: number;
   fields?: string[];
-  sortField?: string;
+  sort?: string;
   sortType?: string;
   currentUserId?: string;
 
@@ -48,9 +48,9 @@ export interface SearchModel {
   refId?: string|number;
 }
 export interface SearchResult<T> {
-  itemTotal?: number;
+  total?: number;
   results: T[];
-  lastPage?: boolean;
+  last?: boolean;
 }
 
 export interface ErrorMessage {
@@ -77,8 +77,8 @@ export interface ResultInfo<T> {
 
 export interface DiffModel<T, ID> {
   id?: ID;
-  oldValue?: T;
-  newValue: T;
+  origin?: T;
+  value: T;
 }
 export enum Status {
   DataNotFound = 0,

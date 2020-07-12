@@ -43,7 +43,7 @@ export interface SearchModel {
   currentUserId?: string;
 
   keyword?: string;
-  excluding?: any;
+  excluding?: Map<string, any>;
   refId?: string|number;
 }
 export interface SearchResult<T> {

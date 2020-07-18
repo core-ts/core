@@ -35,7 +35,7 @@ export interface NumberRange {
 }
 
 export interface SearchModel {
-  page: number;
+  page?: number;
   limit: number;
   firstLimit?: number;
   fields?: string[];

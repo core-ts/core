@@ -58,17 +58,16 @@ export interface ErrorMessage {
   param?: string|number|Date;
   message?: string;
 }
-export enum StatusCode {
-  DataNotFound = 0,
+export enum Status {
+  DuplicateKey = 0,
+  NotFound = 0,
   Success = 1,
-  Error = 2,
-  DuplicateKeyError = 3,
-  DataVersionError = 4,
-  DataCorruptError = 5,
-  ExternalError = 6
+  VersionError = 2,
+  Error = 4,
+  DataCorrupt = 8
 }
 export interface ResultInfo<T> {
-  status: StatusCode;
+  status: Status;
   errors?: ErrorMessage[];
   value?: T;
   message?: string;
@@ -78,10 +77,4 @@ export interface DiffModel<T, ID> {
   id?: ID;
   origin?: T;
   value: T;
-}
-export enum Status {
-  DataNotFound = 0,
-  Success = 1,
-  Error = 2,
-  DataVersionError = 4,
 }

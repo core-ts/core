@@ -37,7 +37,7 @@ export {NumberRange} from './model';
 export {SearchModel} from './model';
 export {SearchResult} from './model';
 export {ErrorMessage} from './model';
-export {StatusCode, Status} from './model';
+export {Status} from './model';
 export {ResultInfo} from './model';
 export {DiffModel} from './model';
 

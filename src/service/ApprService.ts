@@ -9,3 +9,7 @@ export interface ApprService<ID> {
   approve(id: ID, ctx?: any): Promise<Status>;
   reject(id: ID, ctx?: any): Promise<Status>;
 }
+export interface ApprRepository<ID> {
+  approve(id: ID, ctx?: any): Promise<Status>;
+  reject(id: ID, ctx?: any): Promise<Status>;
+}

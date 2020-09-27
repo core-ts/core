@@ -5,3 +5,7 @@ export interface DiffService<T, ID> {
   keys(): string[];
   diff(id: ID, ctx?: any): Promise<DiffModel<T, ID>>;
 }
+export interface DiffRepository<T, ID> {
+  keys(): string[];
+  diff(id: ID, ctx?: any): Promise<DiffModel<T, ID>>;
+}

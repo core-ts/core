@@ -29,7 +29,7 @@ export enum Format {
 
 export interface Model {
   name?: string;
-  attributes: any;
+  attributes: Attributes;
   source?: string;
   model?: any;
   schema?: any;
@@ -62,4 +62,7 @@ export interface Attribute {
   jsonField?: string;
   link?: string;
   typeof?: Model;
+}
+export interface Attributes {
+  [key: string]: Attribute;
 }

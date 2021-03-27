@@ -1,30 +1,60 @@
+export const ObjectId = 'ObjectId';
+export const date = 'date';
+export const datetime = 'datetime';
+export const time = 'time';
+export const boolean = 'boolean';
+export const number = 'number';
+export const integer = 'integer';
+export const text = 'text';
+export const object = 'object';
+export const array = 'array';
+export const primitives = 'primitives';
+export const binary = 'binary';
+export const string = 'string';
+
+export const currency = 'currency';
+export const percentage = 'percentage';
+export const email = 'email';
+export const url = 'url';
+export const phone = 'phone';
+export const fax = 'fax';
+export const ipv4 = 'ipv4';
+export const ipv6 = 'ipv6';
+
+export type DataType = 'ObjectId' | 'date' | 'datetime' | 'time'
+    | 'boolean' | 'number' | 'integer' | 'string' | 'text'
+    | 'object' | 'array' | 'primitives' | 'binary';
+export type FormatType = 'currency' | 'percentage' | 'email' | 'url' | 'phone' | 'fax' | 'ipv4' | 'ipv6';
+
 export enum Type {
   ObjectId = 'ObjectId',
-  Date = 'date',
-  Boolean = 'boolean',
+  date = 'date',
+  time = 'time',
+  datetime = 'datetime',
+  boolean = 'boolean',
 
-  Number = 'number',
-  Integer = 'integer',
-  String = 'string',
-  Text = 'text',
+  number = 'number',
+  integer = 'integer',
+  string = 'string',
+  text = 'text',
 
-  Object = 'object',
-  Array = 'array',
-  Primitives =  'primitives',
-  Binary = 'binary'
+  object = 'object',
+  array = 'array',
+  primitives =  'primitives',
+  binary = 'binary'
 }
 
 export enum Format {
-  Currency = 'currency',
-  Percentage = 'percentage',
+  currency = 'currency',
+  percentage = 'percentage',
 
-  Email = 'email',
-  Url = 'url',
-  Phone = 'phone',
-  Fax = 'fax',
+  email = 'email',
+  url = 'url',
+  phone = 'phone',
+  fax = 'fax',
 
-  IPv4 = 'ipv4',
-  IPv6 = 'ipv6',
+  ipv4 = 'ipv4',
+  ipv6 = 'ipv6',
 }
 
 export interface Model {
@@ -38,8 +68,8 @@ export interface Model {
 export interface Attribute {
   name?: string;
   field?: string;
-  type: Type;
-  format?: Format;
+  type: DataType;
+  format?: FormatType;
   required?: boolean;
   defaultValue?: any;
   key?: boolean;

@@ -1,26 +1,3 @@
-export const ObjectId = 'ObjectId';
-export const date = 'date';
-export const datetime = 'datetime';
-export const time = 'time';
-export const boolean = 'boolean';
-export const number = 'number';
-export const integer = 'integer';
-export const text = 'text';
-export const object = 'object';
-export const array = 'array';
-export const primitives = 'primitives';
-export const binary = 'binary';
-export const string = 'string';
-
-export const currency = 'currency';
-export const percentage = 'percentage';
-export const email = 'email';
-export const url = 'url';
-export const phone = 'phone';
-export const fax = 'fax';
-export const ipv4 = 'ipv4';
-export const ipv6 = 'ipv6';
-
 export type DataType = 'ObjectId' | 'date' | 'datetime' | 'time'
     | 'boolean' | 'number' | 'integer' | 'string' | 'text'
     | 'object' | 'array' | 'primitives' | 'binary';

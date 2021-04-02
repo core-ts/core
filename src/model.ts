@@ -36,7 +36,7 @@ export interface NumberRange {
 
 export interface SearchModel {
   page?: number;
-  limit: number;
+  limit?: number;
   firstLimit?: number;
   fields?: string[];
   sort?: string;
@@ -66,8 +66,9 @@ export enum Status {
   Error = 4,
   DataCorrupt = 8
 }
+export type StatusType = 0 | 1 | 2 | 4 | 8;
 export interface ResultInfo<T> {
-  status: Status;
+  status: StatusType;
   errors?: ErrorMessage[];
   value?: T;
   message?: string;

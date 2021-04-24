@@ -58,17 +58,8 @@ export interface ErrorMessage {
   param?: string|number|Date;
   message?: string;
 }
-export enum Status {
-  DuplicateKey = 0,
-  NotFound = 0,
-  Success = 1,
-  VersionError = 2,
-  Error = 4,
-  DataCorrupt = 8
-}
-export type StatusType = 0 | 1 | 2 | 4 | 8;
 export interface ResultInfo<T> {
-  status: StatusType;
+  status: number|string;
   errors?: ErrorMessage[];
   value?: T;
   message?: string;

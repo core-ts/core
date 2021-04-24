@@ -26,20 +26,7 @@ export {UniqueValueBuilder} from './loader';
 
 export {DataLoader} from './loader';
 
-export {ValueText} from './model';
-export {ValueCode} from './model';
-export {ValueName} from './model';
-export {CodeName} from './model';
-export {CodeText} from './model';
-export {DateRange} from './model';
-export {TimeRange} from './model';
-export {NumberRange} from './model';
-export {SearchModel} from './model';
-export {SearchResult} from './model';
-export {ErrorMessage} from './model';
-export {Status} from './model';
-export {ResultInfo} from './model';
-export {DiffModel} from './model';
+export * from './model';
 
 export * from './repository/ViewRepository';
 export * from './repository/GenericRepository';
@@ -52,7 +39,7 @@ export * from './service/GenericService';
 export * from './service/SearchService';
 export * from './service/ViewSearchService';
 export * from './service/GenericSearchService';
-export {DiffService} from './service/DiffService';
-export {ApprService} from './service/ApprService';
+export * from './service/DiffService';
+export * from './service/ApprService';
 export * from './service/DiffApprService';
 export * from './service/GenericSearchDiffApprService';

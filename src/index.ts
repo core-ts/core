@@ -26,6 +26,7 @@ export {UniqueValueBuilder} from './loader';
 
 export {DataLoader} from './loader';
 
+export * from './video';
 export * from './model';
 
 export * from './repository/ViewRepository';
@@ -43,3 +44,14 @@ export * from './service/DiffService';
 export * from './service/ApprService';
 export * from './service/DiffApprService';
 export * from './service/GenericSearchDiffApprService';
+
+export * from './mail/model/AttachmentData';
+export * from './mail/model/TrackingSettings';
+export * from './mail/model/EmailData';
+export * from './mail/model/MailData';
+export * from './mail/model/MailContent';
+export * from './mail/model/PersonalizationData';
+export * from './mail/model/MailSettings';
+export * from './mail/model/ASMOptions';
+export * from './mail/service/MailService';
+export * from './mail/config';

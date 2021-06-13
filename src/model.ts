@@ -1,3 +1,8 @@
+export interface Model {
+  id: string;
+  name?: string;
+  status?: string;
+}
 export interface ValueText {
   value: string;
   text?: string;
@@ -35,9 +40,9 @@ export interface NumberRange {
 }
 
 export interface SearchModel {
-  page?: number;
-  limit?: number;
-  firstLimit?: number;
+  // page?: number;
+  // limit?: number;
+  // firstLimit?: number;
   fields?: string[];
   sort?: string;
   currentUserId?: string;
@@ -47,8 +52,8 @@ export interface SearchModel {
   refId?: string|number;
 }
 export interface SearchResult<T> {
+  list: T[];
   total?: number;
-  results: T[];
   last?: boolean;
 }
 

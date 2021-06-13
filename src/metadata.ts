@@ -1,3 +1,13 @@
+export enum Status {
+  Active = 'A',
+  Inactive = 'I',
+  Deactivated = 'D',
+  Deleted = 'D'
+}
+export enum Gender {
+  Male = 'M',
+  Female = 'F'
+}
 export type DataType = 'ObjectId' | 'date' | 'datetime' | 'time'
     | 'boolean' | 'number' | 'integer' | 'string' | 'text'
     | 'object' | 'array' | 'primitives' | 'binary';

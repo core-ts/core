@@ -48,6 +48,7 @@ export interface Model {
   name?: string;
   attributes: Attributes;
   source?: string;
+  collection?: string;
   model?: any;
   schema?: any;
 }

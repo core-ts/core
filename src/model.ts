@@ -1,4 +1,30 @@
-export interface Model {
+export interface Headers {
+  [key: string]: any;
+}
+export interface HttpOptionsService {
+  getHttpOptions(): { headers?: Headers };
+}
+export interface HttpRequest {
+  get<T>(url: string, options?: {headers?: Headers}): Promise<T>;
+  delete<T>(url: string, options?: {headers?: Headers}): Promise<T>;
+  post<T>(url: string, obj: any, options?: {headers?: Headers}): Promise<T>;
+  put<T>(url: string, obj: any, options?: {headers?: Headers}): Promise<T>;
+  patch<T>(url: string, obj: any, options?: {headers?: Headers}): Promise<T>;
+}
+
+export interface Tracking {
+  createdAt?: Date;
+  createdBy?: string;
+  updatedAt?: Date;
+  updatedBy?: string;
+}
+export interface Version {
+  version?: number;
+}
+export interface Sequence {
+  sequenceNo: number;
+}
+export interface Domain {
   id: string;
   name?: string;
   status?: string;

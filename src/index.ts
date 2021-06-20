@@ -26,7 +26,6 @@ export {UniqueValueBuilder} from './loader';
 
 export {DataLoader} from './loader';
 
-export * from './video';
 export * from './model';
 
 export * from './repository/ViewRepository';
@@ -55,3 +54,6 @@ export * from './mail/model/MailSettings';
 export * from './mail/model/ASMOptions';
 export * from './mail/service/MailService';
 export * from './mail/config';
+
+export * from './video';
+export * from './health';

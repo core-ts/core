@@ -11,7 +11,14 @@ export interface HttpRequest {
   put<T>(url: string, obj: any, options?: {headers?: Headers}): Promise<T>;
   patch<T>(url: string, obj: any, options?: {headers?: Headers}): Promise<T>;
 }
-
+export interface Module {
+  id?: string|number;
+  path?: string;
+  route?: string;
+}
+export interface ModuleLoader {
+  load(): Promise<Module[]>;
+}
 export interface Tracking {
   createdAt?: Date;
   createdBy?: string;

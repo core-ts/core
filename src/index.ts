@@ -7,7 +7,6 @@ export {LocaleFormatter} from './formatter';
 export {StringFormatter} from './formatter';
 export {LocaleStringFormatter} from './formatter';
 
-export {Type, Format} from './metadata';
 export {Model} from './metadata';
 export {Attribute} from './metadata';
 
@@ -55,5 +54,6 @@ export * from './mail/model/ASMOptions';
 export * from './mail/service/MailService';
 export * from './mail/config';
 
+export * from './location';
 export * from './video';
 export * from './health';

@@ -73,21 +73,26 @@ export interface NumberRange {
 }
 
 export interface SearchModel {
-  // page?: number;
-  // limit?: number;
-  // firstLimit?: number;
+  page?: number;
+  limit?: number;
+  firstLimit?: number;
   fields?: string[];
   sort?: string;
   currentUserId?: string;
 
+  q?: string;
   keyword?: string;
-  excluding?: Map<string, any>;
+  excluding?: string[]|number[];
   refId?: string|number;
+
+  pageIndex?: number;
+  pageSize?: number;
 }
 export interface SearchResult<T> {
   list: T[];
   total?: number;
   last?: boolean;
+  nextPageToken?: string;
 }
 
 export interface ErrorMessage {
@@ -107,4 +112,19 @@ export interface DiffModel<T, ID> {
   id?: ID;
   origin?: T;
   value: T;
+}
+
+export interface UserSM extends SearchModel {
+  userId?: string;
+  username?: string;
+  email?: string;
+  displayName?: string;
+  status?: string[]|string;
+}
+export interface RoleSM extends SearchModel {
+  roleId?: string;
+  roleName?: string;
+  status?: string[]|string;
+  remark?: string;
+  description?: string;
 }

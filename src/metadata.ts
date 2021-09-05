@@ -38,7 +38,7 @@ export interface Attribute {
   ignored?: boolean;
   jsonField?: string;
   link?: string;
-  typeof?: Model;
+  typeof?: Attributes;
 }
 export interface Attributes {
   [key: string]: Attribute;

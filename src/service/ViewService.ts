@@ -1,7 +1,7 @@
-import {Model} from '../metadata';
+import {Attributes} from '../metadata';
 
 export interface ViewService<T, ID> {
-  metadata?(): Model;
+  metadata?(): Attributes;
   keys?(): string[];
   all?(ctx?: any): Promise<T[]>;
   load(id: ID, ctx?: any): Promise<T>;

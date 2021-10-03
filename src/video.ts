@@ -1,13 +1,72 @@
+export interface TopLevelCommentSnippet {
+  videoId: string;
+  topLevelComment: TopLevelComment;
+  canReply: boolean;
+  totalReplyCount: number;
+  isPublic: boolean;
+}
+export interface TopLevelComment {
+  kind: string;
+  etag: string;
+  id: string;
+  snippet: TopLevelCommentSubSnippet;
+}
+export interface TopLevelCommentSubSnippet extends CommentInfo, YoutubeAuthor {
+  videoId: string;
+}
+
+export interface CommentThead extends Author, CommentInfo {
+  videoId: string;
+  canReply: boolean;
+  totalReplyCount: number;
+  isPublic: boolean;
+  nextPageToken?: string;
+}
+
+export interface Comment extends Author, CommentInfo {
+  parentId: string;
+}
+export interface AuthorChannelId {
+  value: string;
+}
+export interface AuthorInfo {
+  authorDisplayName: string;
+  authorChannelUrl: string;
+  authorProfileImageUrl: string;
+}
+export interface Author extends AuthorInfo {
+  authorChannelId: string;
+}
+export interface YoutubeAuthor extends AuthorInfo {
+  authorChannelId: AuthorChannelId;
+}
+export interface CommentInfo {
+  id: string;
+  textDisplay: string;
+  textOriginal: string;
+  canRate: boolean;
+  viewerRating: string;
+  likeCount: number;
+  publishedAt: Date;
+  updatedAt: Date;
+}
+export interface CommentSnippet extends CommentInfo, YoutubeAuthor {
+  parentId: string;
+}
+
+export interface StringMap {
+  [key: string]: string;
+}
 export interface ListResult<T> {
   list?: T[];
   total?: number;
   limit?: number;
   nextPageToken?: string;
 }
+export type ChannelSortType = 'title' | 'count' | 'date';
 export interface ChannelSM {
-  keyword?: string;
-  order?: string; // date, rating, relevance, title, videoCount (for channels), viewCount (for live broadcast)
-  nextPageToken?: string;
+  q?: string;
+  sort?: SortType; // date, rating, relevance, title, count (for channels)
   forMine?: boolean;
   channelId?: string;
   channelType?: string; // any, show
@@ -18,10 +77,10 @@ export interface ChannelSM {
   safeSearch?: string; // moderate, none, strict
   topicId?: string;
 }
+export type PlaylistSortType = 'title' | 'count' | 'date';
 export interface PlaylistSM {
-  keyword?: string;
-  order?: string; // date, rating, relevance, title, videoCount (for channels), viewCount (for live broadcast)
-  nextPageToken?: string;
+  q?: string;
+  sort?: SortType; // date, rating, relevance, title, count (for channels), viewCount (for live broadcast)
   forMine?: boolean;
   channelId?: string;
   channelType?: string; // any, show
@@ -31,31 +90,42 @@ export interface PlaylistSM {
   relevanceLanguage?: string;
   safeSearch?: string; // moderate, none, strict
 }
+export type ChannelType = 'show' | 'any' | '';
+export type EventType = 'completed' | 'live' | 'upcoming' | '';
+export type ItemType = 'video' | 'channel' | 'playlist' | 'any' | '';
+export type Duration = 'long' | 'medium' | 'short' | 'any' | '';
+export type Caption = 'closedCaption' | 'none' | 'any' | '';
+export type Definition = 'high' | 'standard' | 'any' | '';
+export type Dimension = '2d' | '3d' | 'any' | '';
+export type EmbeddableType = 'true' | 'any' | '';
+export type LicenseType = 'creativeCommon' | 'youtube' | 'any' | '';
+export type SyndicatedType = 'true' | 'any' | '';
+export type VideoType = 'movie' | 'episode' | 'any' | '';
+export type SortType = 'rating' | 'date' | 'count' | 'relevance' | 'title' | 'viewCount' | '';
 export interface ItemSM {
-  keyword?: string;
-  type?: string; // video, channel, playlist
-  videoDuration?: string; // any, long (more than 20 minutes), medium (from 4 minutes to 20 minutes), short (less than 4 minutes)
-  order?: string; // date, rating, relevance, title, videoCount (for channels), viewCount (for live broadcast)
-  nextPageToken?: string;
+  q?: string;
+  type?: ItemType; // video, channel, playlist
+  duration?: Duration; // any, long (more than 20 minutes), medium (from 4 minutes to 20 minutes), short (less than 4 minutes)
+  sort?: SortType; // date, rating, relevance, title, videoCount (for channels), viewCount (for live broadcast) => title, date => publishedAt, relevance => rank, count => videoCount
   relatedToVideoId?: string;
   forMine?: boolean;
   channelId?: string;
-  channelType?: string; // any, show
-  eventType?: string; // completed, live, upcoming
+  channelType?: ChannelType; // any, show
+  eventType?: EventType; // completed, live, upcoming
   publishedAfter?: Date;
   publishedBefore?: Date;
   regionCode?: string;
   relevanceLanguage?: string;
   safeSearch?: string; // moderate, none, strict
   topicId?: string;
-  videoCaption?: string; // any, closedCaption, none
-  videoCategoryId?: string;
-  videoDefinition?: string; // any, high, standard
-  videoDimension?: string; // 2d, 3d, any
-  videoEmbeddable?: string; // any, true
-  videoLicense?: string; // any, creativeCommon, youtube
-  videoSyndicated?: string; // any, true
-  videoType?: string; // any, episode, movie
+  categoryId?: string;
+  caption?: Caption; // any, closedCaption, none
+  definition?: Definition; // any, high, standard
+  dimension?: Dimension; // 2d, 3d, any
+  embeddable?: EmbeddableType; // any, true
+  license?: LicenseType; // any, creativeCommon, youtube
+  syndicated?: SyndicatedType; // any, true
+  videoType?: SyndicatedType; // any, episode, movie
 }
 export interface Item extends Title, Thumbnail, ChannelInfo {
   kind?: string; // video, channel, playlist
@@ -79,13 +149,14 @@ export interface Channel extends ItemInfo {
   likes?: string;
   favorites?: string;
   uploads?: string;
-  timestamp?: Date;
+  lastUpload?: Date;
   count?: number;
   itemCount?: number;
   playlistCount?: number;
   playlistItemCount?: number;
   playlistVideoCount?: number;
   playlistVideoItemCount?: number;
+  channels?: string[]|Channel[];
 }
 export interface Playlist extends ItemInfo, BigThumbnail {
   count?: number;
@@ -98,6 +169,12 @@ export interface PlaylistItemInfo {
   videoOwnerChannelTitle?: string;
 }
 export interface PlaylistVideo extends ItemInfo, BigThumbnail, PlaylistItemInfo {
+  duration?: number;
+  dimension?: string;
+  definition?: number; // 0: 144, 1: 240, 2: 360, 3: 480, 4: 720, 5: 1080, 6: 1440, 7: 2160
+  caption?: boolean;
+  licensedContent?: boolean;
+  projection?: string;
 }
 export interface VideoInfo {
   tags?: string[];
@@ -109,6 +186,8 @@ export interface VideoInfo {
 export interface Video extends ItemInfo, BigThumbnail, VideoDetail, VideoInfo {
   videoOwnerChannelId?: string;
   videoOwnerChannelTitle?: string;
+  blockedRegions?: string[];
+  allowedRegions?: string[];
 }
 export interface VideoDetail {
   duration: number;
@@ -171,6 +250,10 @@ export interface VideoItemDetail {
   videoId: string;
   videoPublishedAt: Date;
 }
+export interface RegionRestriction {
+  allow?: string[];
+  blocked?: string[];
+}
 export interface YoutubeVideoDetail {
   duration: string;
   dimension: string;
@@ -178,6 +261,7 @@ export interface YoutubeVideoDetail {
   caption: string;
   licensedContent: boolean;
   projection: string;
+  regionRestriction?: RegionRestriction;
 }
 export interface BaseSnippet extends Title, ChannelInfo {
   thumbnails: Thumbnails;
@@ -229,73 +313,35 @@ export interface CategorySnippet {
   assignable: boolean;
   channelId: string;
 }
-
-export interface TopLevelCommentSnippet {
-  videoId: string;
-  topLevelComment: TopLevelComment;
-  canReply: boolean;
-  totalReplyCount: number;
-  isPublic: boolean;
+export interface ChannelSubscriptions {
+  id: string;
+  data: Channel[]|string[];
 }
-export interface TopLevelComment {
+export interface SubscriptionSnippet extends Title {
+  title: string;
+  resourceId: SubscriptionResource;
+  thumbnails: Thumbnails;
+}
+export interface SubscriptionResource {
   kind: string;
-  etag: string;
-  id: string;
-  snippet: TopLevelCommentSubSnippet;
-}
-export interface TopLevelCommentSubSnippet extends CommentInfo, YoutubeAuthor {
-  videoId: string;
-}
-
-export interface CommentThead extends Author, CommentInfo {
-  videoId: string;
-  canReply: boolean;
-  totalReplyCount: number;
-  isPublic: boolean;
-  nextPageToken?: string;
-}
-
-export interface Comment extends Author, CommentInfo {
-  parentId: string;
-}
-export interface AuthorChannelId {
-  value: string;
-}
-export interface AuthorInfo {
-  authorDisplayName: string;
-  authorChannelUrl: string;
-  authorProfileImageUrl: string;
-}
-export interface Author extends AuthorInfo {
-  authorChannelId: string;
-}
-export interface YoutubeAuthor extends AuthorInfo {
-  authorChannelId: AuthorChannelId;
-}
-export interface CommentInfo {
-  id: string;
-  textDisplay: string;
-  textOriginal: string;
-  canRate: boolean;
-  viewerRating: string;
-  likeCount: number;
-  publishedAt: Date;
-  updatedAt: Date;
-}
-export interface CommentSnippet extends CommentInfo, YoutubeAuthor {
-  parentId: string;
+  channelId: string;
 }
 
 export interface ChannelSync {
   id: string;
   uploads?: string;
-  timestamp?: Date;
+  syncTime?: Date;
   level?: number;
 }
 export interface PlaylistCollection {
   id: string;
   videos: string[];
 }
+export interface CategoryCollection {
+  id: string;
+  data: VideoCategory[];
+}
+
 export interface SyncRepository {
   getChannelSync(channelId: string): Promise<ChannelSync>;
   saveChannel(channel: Channel): Promise<number>;
@@ -311,7 +357,8 @@ export interface SyncClient {
   getPlaylist(id: string): Promise<Playlist>;
   getChannelPlaylists(channelId: string, max?: number, nextPageToken?: string): Promise<ListResult<Playlist>>;
   getPlaylistVideos(playlistId: string, max?: number, nextPageToken?: string): Promise<ListResult<PlaylistVideo>>;
-  getVideos(ids: string[], noSnippet?: boolean): Promise<Video[]>;
+  getVideos(ids: string[]): Promise<Video[]>;
+  getSubscriptions(channelId: string): Promise<Channel[]>;
 }
 export interface SyncService {
   syncChannel(channelId: string): Promise<number>;
@@ -320,32 +367,37 @@ export interface SyncService {
   syncPlaylists(playlistIds: string[], level?: number): Promise<number>;
 }
 
+export interface SubscriptionsService {
+  getSubscriptions(channelId: string, fields?: string[]): Promise<Channel[]>;
+}
+export type CommentOrder = 'time' | 'relevance' | '';
+export type TextFormat = 'html' | 'plainText' | '';
 export interface VideoService {
   getCagetories(regionCode?: string): Promise<VideoCategory[]>;
-  getChannels(ids: string[]): Promise<Channel[]>;
-  getChannel(id: string): Promise<Channel>;
-  getChannelPlaylists(channelId: string, max?: number, nextPageToken?: string): Promise<ListResult<Playlist>>;
-  getPlaylists(ids: string[]): Promise<Playlist[]>;
-  getPlaylist(id: string): Promise<Playlist>;
-  getChannelVideos(channelId: string, max?: number, nextPageToken?: string): Promise<ListResult<PlaylistVideo>>;
-  getPlaylistVideos(playlistId: string, max?: number, nextPageToken?: string): Promise<ListResult<PlaylistVideo>>;
-  getPopularVideos(regionCode?: string, videoCategoryId?: string, max?: number, nextPageToken?: string): Promise<ListResult<Video>>;
-  getPopularVideosByRegion(regionCode?: string, max?: number, nextPageToken?: string): Promise<ListResult<Video>>;
-  getPopularVideosByCategory(videoCategoryId?: string, max?: number, nextPageToken?: string): Promise<ListResult<Video>>;
-  getVideos(ids: string[], noSnippet?: boolean): Promise<Video[]>;
-  getVideo(id: string, noSnippet?: boolean): Promise<Video>;
-  search(sm: ItemSM, max?: number, nextPageToken?: string|number): Promise<ListResult<Item>>;
-  getRelatedVideos?(videoId: string, max?: number, nextPageToken?: string): Promise<ListResult<Item>>;
-  searchVideos?(sm: ItemSM, max?: number, nextPageToken?: string|number): Promise<ListResult<Item>>;
-  searchPlaylists?(sm: PlaylistSM, max?: number, nextPageToken?: string|number): Promise<ListResult<Playlist>>;
-  searchChannels?(sm: ChannelSM, max?: number, nextPageToken?: string|number): Promise<ListResult<Channel>>;
+  getChannels(ids: string[], fields?: string[]): Promise<Channel[]>;
+  getChannel(id: string, fields?: string[]): Promise<Channel>;
+  getChannelPlaylists(channelId: string, max?: number, nextPageToken?: string, fields?: string[]): Promise<ListResult<Playlist>>;
+  getPlaylists(ids: string[], fields?: string[]): Promise<Playlist[]>;
+  getPlaylist(id: string, fields?: string[]): Promise<Playlist>;
+  getChannelVideos(channelId: string, max?: number, nextPageToken?: string, fields?: string[]): Promise<ListResult<PlaylistVideo>>;
+  getPlaylistVideos(playlistId: string, max?: number, nextPageToken?: string, fields?: string[]): Promise<ListResult<PlaylistVideo>>;
+  getPopularVideos(regionCode?: string, videoCategoryId?: string, max?: number, nextPageToken?: string, fields?: string[]): Promise<ListResult<Video>>;
+  getVideos(ids: string[], fields?: string[]): Promise<Video[]>;
+  getVideo(id: string, fields?: string[]): Promise<Video>;
+  search(sm: ItemSM, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Item>>;
+  getRelatedVideos?(videoId: string, max?: number, nextPageToken?: string, fields?: string[]): Promise<ListResult<Item>>;
+  searchVideos?(sm: ItemSM, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Item>>;
+  searchPlaylists?(sm: PlaylistSM, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Playlist>>;
+  searchChannels?(sm: ChannelSM, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Channel>>;
   /**
    * @param videoId
    * @param order relevance, time (default)
    * @param nextPageToken
    */
-  getCommentThreads?(videoId: string, order?: string, max?: number, nextPageToken?: string): Promise<ListResult<CommentThead>>;
+  getCommentThreads?(videoId: string, order?: CommentOrder, max?: number, nextPageToken?: string): Promise<ListResult<CommentThead>>;
   getComments?(id: string, max?: number, nextPageToken?: string): Promise<ListResult<Comment>>;
+  getPopularVideosByRegion?(regionCode?: string, max?: number, nextPageToken?: string, fields?: string[]): Promise<ListResult<Video>>;
+  getPopularVideosByCategory?(videoCategoryId?: string, max?: number, nextPageToken?: string, fields?: string[]): Promise<ListResult<Video>>;
 }
 export interface CacheItem<T> {
   item: T;

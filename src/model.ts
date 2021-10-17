@@ -72,7 +72,7 @@ export interface NumberRange {
   upper?: number;
 }
 
-export interface SearchModel {
+export interface Filter {
   page?: number;
   limit?: number;
   firstLimit?: number;
@@ -114,14 +114,14 @@ export interface DiffModel<T, ID> {
   value: T;
 }
 
-export interface UserSM extends SearchModel {
+export interface UserFilter extends Filter {
   userId?: string;
   username?: string;
   email?: string;
   displayName?: string;
   status?: string[]|string;
 }
-export interface RoleSM extends SearchModel {
+export interface RoleFilter extends Filter {
   roleId?: string;
   roleName?: string;
   status?: string[]|string;

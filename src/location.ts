@@ -1,4 +1,4 @@
-import {DateRange, NumberRange, SearchModel} from './model';
+import {DateRange, Filter, NumberRange} from './model';
 
 export interface Article {
   id?: string;
@@ -9,7 +9,7 @@ export interface Article {
   tags?: string[];
   status?: string;
 }
-export interface ArticleSM extends SearchModel {
+export interface ArticleFilter extends Filter {
   id?: string;
   title?: string;
   type?: string;
@@ -39,7 +39,7 @@ export interface LocationInfo {
   rate4: number;
   rate5: number;
 }
-export interface LocationSM extends SearchModel {
+export interface LocationFilter extends Filter {
   id?: string;
   name?: string;
   type?: string;
@@ -63,7 +63,7 @@ export interface Event {
   customURL?: string;
   locationId?: string;
 }
-export interface EventSM extends SearchModel {
+export interface EventFilter extends Filter {
   id?: string;
   name?: string;
   type?: string;
@@ -86,7 +86,7 @@ export interface Bookable {
   capacity?: number;
   locationId?: string;
 }
-export interface BookableSM extends SearchModel {
+export interface BookableFilter extends Filter {
   id?: string;
   name?: string;
   type?: string;
@@ -107,7 +107,7 @@ export interface Booking {
   endTime: Date;
   status?: string;
 }
-export interface BookingSM extends SearchModel {
+export interface BookingFilter extends Filter {
   bookingId?: string;
   id?: string;
   userId?: string;
@@ -132,7 +132,7 @@ export interface Tour {
   locations: string[]|Location[];
   customURL?: string;
 }
-export interface TourSM extends SearchModel {
+export interface TourFilter extends Filter {
   id?: string;
   name?: string;
   type?: string;

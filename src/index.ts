@@ -7,8 +7,7 @@ export {LocaleFormatter} from './formatter';
 export {StringFormatter} from './formatter';
 export {LocaleStringFormatter} from './formatter';
 
-export {Model} from './metadata';
-export {Attribute} from './metadata';
+export * from './metadata';
 
 export {CacheService} from './cache';
 export {SyncCacheService} from './cache';

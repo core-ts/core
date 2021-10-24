@@ -27,11 +27,17 @@ export {DataLoader} from './loader';
 
 export * from './model';
 
+import {GenericSearchRepository} from './repository/GenericSearchRepository';
+export {GenericSearchRepository as Repository};
+
 export * from './repository/ViewRepository';
 export * from './repository/GenericRepository';
 export * from './repository/SearchRepository';
 export * from './repository/ViewSearchRepository';
 export * from './repository/GenericSearchRepository';
+
+import {GenericSearchService} from './service/GenericSearchService';
+export {GenericSearchService as Service};
 
 export * from './service/ViewService';
 export * from './service/GenericService';

@@ -58,16 +58,26 @@ export interface CodeText {
 }
 
 export interface DateRange {
+  min?: Date;
+  max?: Date;
+  bottom?: Date;
+  top?: Date;
   startDate?: Date;
   endDate?: Date;
 }
 export interface TimeRange {
+  min?: Date;
+  max?: Date;
+  bottom?: Date;
+  top?: Date;
   startTime?: Date;
   endTime?: Date;
 }
 export interface NumberRange {
   min?: number;
   max?: number;
+  bottom?: number;
+  top?: number;
   lower?: number;
   upper?: number;
 }

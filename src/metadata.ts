@@ -11,8 +11,11 @@ export interface Model {
   source?: string;
   table?: string;
   collection?: string;
-  model?: any;
-  schema?: any;
+  // for mongo lowcode
+  sort?: string;
+  geo?: string;
+  latitude?: string;
+  longitude?: string;
 }
 export interface Attribute {
   name?: string;

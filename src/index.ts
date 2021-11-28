@@ -62,3 +62,4 @@ export * from './mail/config';
 export * from './location';
 export * from './video';
 export * from './health';
+export * from './logger';

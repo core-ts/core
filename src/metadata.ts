@@ -1,7 +1,7 @@
 export type DataType = 'ObjectId' | 'date' | 'datetime' | 'time'
-    | 'boolean' | 'number' | 'integer' | 'string' | 'text'
-    | 'object' | 'array' | 'binary'
-    | 'primitives' | 'booleans' | 'numbers' | 'integers' | 'strings' | 'dates' | 'datetimes' | 'times';
+  | 'boolean' | 'number' | 'integer' | 'string' | 'text'
+  | 'object' | 'array' | 'binary'
+  | 'primitives' | 'booleans' | 'numbers' | 'integers' | 'strings' | 'dates' | 'datetimes' | 'times';
 export type FormatType = 'currency' | 'percentage' | 'email' | 'url' | 'phone' | 'fax' | 'ipv4' | 'ipv6';
 export type MatchType = 'equal' | 'prefix' | 'contain' | 'max' | 'min'; // contain: default for string, min: default for Date, number
 
@@ -26,7 +26,7 @@ export interface Attribute {
   defaultValue?: any;
   key?: boolean;
   unique?: boolean;
-  enum?: string[]|number[];
+  enum?: string[] | number[];
   q?: boolean;
   noinsert?: boolean;
   noupdate?: boolean;
@@ -39,7 +39,7 @@ export interface Attribute {
   lt?: number;
   precision?: number;
   scale?: number;
-  exp?: RegExp|string;
+  exp?: RegExp | string;
   code?: string;
   noformat?: boolean;
   ignored?: boolean;

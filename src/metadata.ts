@@ -9,6 +9,7 @@ export interface Model {
   name?: string;
   attributes: Attributes;
   source?: string;
+  table?: string;
   collection?: string;
   model?: any;
   schema?: any;
@@ -17,6 +18,7 @@ export interface Model {
 export interface Attribute {
   name?: string;
   field?: string;
+  column?: string;
   type?: DataType;
   format?: FormatType;
   required?: boolean;
@@ -24,6 +26,7 @@ export interface Attribute {
   defaultValue?: any;
   key?: boolean;
   unique?: boolean;
+  enum?: string[]|number[];
   q?: boolean;
   noinsert?: boolean;
   noupdate?: boolean;

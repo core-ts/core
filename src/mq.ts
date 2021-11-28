@@ -21,41 +21,41 @@ export interface Writer<T, R, ID> {
   write(data: T, attributes?: StringMap, id?: ID): Promise<R>;
 }
 
-export interface SimpleProducer<T, R, ID> {
+export interface Producer<T, R, ID> {
   produce(to: string, data: T, attributes?: StringMap, id?: ID): Promise<R>;
 }
-export interface SimplePublisher<T, R, ID> {
+export interface Publisher<T, R, ID> {
   publish(to: string, data: T, attributes?: StringMap, id?: ID): Promise<R>;
 }
-export interface SimpleSender<T, R, ID> {
+export interface Sender<T, R, ID> {
   send(to: string, data: T, attributes?: StringMap, id?: ID): Promise<R>;
 }
-export interface SimpleWriter<T, R, ID> {
+export interface Writer<T, R, ID> {
   write(to: string, data: T, attributes?: StringMap, id?: ID): Promise<R>;
 }
 
-export interface SimpleConsumer<T> {
-  consume(handle: (data: T, attributes?: StringMap) => Promise<number>): void;
+export interface SimpleConsumer<T, R> {
+  consume(handle: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
 }
 export interface SimpleSubscriber<T, R> {
-  subscribe(handle: (data: T, attributes?: StringMap) => Promise<number>): void;
+  subscribe(handle: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
 }
-export interface SimpleReceiver<T> {
-  receive(handle: (data: T, attributes?: StringMap) => Promise<number>): void;
+export interface SimpleReceiver<T, R> {
+  receive(handle: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
 }
-export interface SimpleReader<T> {
-  read(handle: (data: T, attributes?: StringMap) => Promise<number>): void;
+export interface SimpleReader<T, R> {
+  read(handle: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
 }
 
-export interface Consumer<T, ID, R> {
+export interface MessageConsumer<T, ID, R> {
   consume(data: Message<T, ID, R>): void;
 }
-export interface Subscriber<T, ID, R> {
+export interface MessageSubscriber<T, ID, R> {
   subscribe(handle: (data: Message<T, ID, R>) => Promise<number>): void;
 }
-export interface Receiver<T, ID, R> {
+export interface MessageReceiver<T, ID, R> {
   receive(handle: (data: Message<T, ID, R>) => Promise<number>): void;
 }
-export interface Reader<T, ID, R> {
+export interface MessageReader<T, ID, R> {
   read(handle: (data: Message<T, ID, R>) => Promise<number>): void;
 }

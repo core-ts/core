@@ -14,7 +14,6 @@ export interface Model {
   model?: any;
   schema?: any;
 }
-
 export interface Attribute {
   name?: string;
   field?: string;
@@ -23,7 +22,7 @@ export interface Attribute {
   format?: FormatType;
   required?: boolean;
   match?: MatchType;
-  defaultValue?: any;
+  default?: string|number|Date;
   key?: boolean;
   unique?: boolean;
   enum?: string[] | number[];
@@ -46,6 +45,8 @@ export interface Attribute {
   jsonField?: string;
   link?: string;
   typeof?: Attributes;
+  true?: string|number;
+  false?: string|number;
 }
 export interface Attributes {
   [key: string]: Attribute;

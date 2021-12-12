@@ -92,7 +92,7 @@ export class ViewManager<T, ID> implements ViewService<T, ID> {
     return (this.repo.all ? this.repo.all() : Promise.resolve([]));
   }
   load(id: ID, ctx?: any): Promise<T | null> {
-    return this.repo.load(id, ctx);;
+    return this.repo.load(id, ctx);
   }
   exist(id: ID, ctx?: any): Promise<boolean> {
     return (this.repo.exist ? this.repo.exist(id, ctx) : Promise.resolve(false));
@@ -108,10 +108,10 @@ export class GenericManager<T, ID> extends ViewManager<T, ID> implements Generic
     this.delete = this.delete.bind(this);
   }
   insert(obj: T, ctx?: any): Promise<number> {
-    return this.repository.insert(obj, ctx);;
+    return this.repository.insert(obj, ctx);
   }
   update(obj: T, ctx?: any): Promise<number> {
-    return this.repository.update(obj, ctx);;
+    return this.repository.update(obj, ctx);
   }
   patch(obj: T, ctx?: any): Promise<number> {
     return (this.repository.patch ? this.repository.patch(obj, ctx) : Promise.resolve(-1));

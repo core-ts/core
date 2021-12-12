@@ -1,6 +1,6 @@
 {
   "name": "onecore",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "onecore",
   "main": "./lib/index.js",
   "types": "./src/index.ts",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com/core-ts/onecore"
+    "url": "git@github.com/core-ts/core"
   },
   "keywords": [
     "one",

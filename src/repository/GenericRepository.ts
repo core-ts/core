@@ -1,9 +1,9 @@
 import {ViewRepository} from './ViewRepository';
 
-export interface GenericRepository<T, ID, R> extends ViewRepository<T, ID> {
-  insert(obj: T, ctx?: any): Promise<R>;
-  update(obj: T, ctx?: any): Promise<R>;
-  patch?(obj: T, ctx?: any): Promise<R>;
-  save?(obj: T, ctx?: any): Promise<R>;
+export interface GenericRepository<T, ID> extends ViewRepository<T, ID> {
+  insert(obj: T, ctx?: any): Promise<number>;
+  update(obj: T, ctx?: any): Promise<number>;
+  patch?(obj: T, ctx?: any): Promise<number>;
+  save?(obj: T, ctx?: any): Promise<number>;
   delete?(id: ID, ctx?: any): Promise<number>;
 }

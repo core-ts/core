@@ -74,8 +74,11 @@ import { ViewRepository } from './repository/ViewRepository';
 import { GenericService } from './service/GenericService';
 import { ViewService } from './service/ViewService';
 
+export type Search<T, F> = (s: F, limit?: number, offset?: number | string, fields?: string[]) => Promise<SearchResult<T>>;
+export type SearchFunc<T, F> = Search<T, F>;
+
 export class ViewManager<T, ID> implements ViewService<T, ID> {
-  constructor(private repo: ViewRepository<T, ID>) {
+  constructor(private r: ViewRepository<T, ID>) {
     this.metadata = this.metadata.bind(this);
     this.keys = this.keys.bind(this);
     this.all = this.all.bind(this);
@@ -83,19 +86,19 @@ export class ViewManager<T, ID> implements ViewService<T, ID> {
     this.exist = this.exist.bind(this);
   }
   metadata(): Attributes|undefined {
-    return (this.repo.metadata ? this.repo.metadata() : undefined);
+    return (this.r.metadata ? this.r.metadata() : undefined);
   }
   keys(): string[] {
-    return (this.repo.keys ? this.repo.keys() : []);
+    return (this.r.keys ? this.r.keys() : []);
   }
   all(ctx?: any): Promise<T[]> {
-    return (this.repo.all ? this.repo.all() : Promise.resolve([]));
+    return (this.r.all ? this.r.all() : Promise.resolve([]));
   }
   load(id: ID, ctx?: any): Promise<T | null> {
-    return this.repo.load(id, ctx);
+    return this.r.load(id, ctx);
   }
   exist(id: ID, ctx?: any): Promise<boolean> {
-    return (this.repo.exist ? this.repo.exist(id, ctx) : Promise.resolve(false));
+    return (this.r.exist ? this.r.exist(id, ctx) : Promise.resolve(false));
   }
 }
 export class GenericManager<T, ID> extends ViewManager<T, ID> implements GenericService<T, ID, number> {
@@ -123,12 +126,12 @@ export class GenericManager<T, ID> extends ViewManager<T, ID> implements Generic
     return (this.repository.delete ? this.repository.delete(id, ctx) : Promise.resolve(-1));
   }
 }
-export class Manager<T, ID, S extends Filter> extends GenericManager<T, ID> implements GenericSearchService<T, ID, number, S> {
-  constructor(public find: (s: S, offset?: number, skip?: number|string, fields?: string[]) => Promise<SearchResult<T>>, repo: GenericRepository<T, ID>) {
+export class Manager<T, ID, F extends Filter> extends GenericManager<T, ID> implements GenericSearchService<T, ID, number, F> {
+  constructor(public find: Search<T, F>, repo: GenericRepository<T, ID>) {
     super(repo);
     this.search = this.search.bind(this);
   }
-  search(s: S, limit?: number, offset?: number|string, fields?: string[]): Promise<SearchResult<T>> {
+  search(s: F, limit?: number, offset?: number|string, fields?: string[]): Promise<SearchResult<T>> {
     return this.find(s, limit, offset, fields);
   }
 }

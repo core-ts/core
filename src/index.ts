@@ -37,9 +37,6 @@ export * from './repository/SearchRepository';
 export * from './repository/ViewSearchRepository';
 export * from './repository/GenericSearchRepository';
 
-import {GenericSearchService} from './service/GenericSearchService';
-export {GenericSearchService as Service};
-
 export * from './service/ViewService';
 export * from './service/GenericService';
 export * from './service/SearchService';
@@ -66,10 +63,14 @@ export * from './video';
 export * from './health';
 export * from './logger';
 
+export type Log = (msg: string) => void;
+export type LogFunc = Log;
+
 import { Attributes } from './metadata';
 import { Filter, SearchResult } from './model';
 // import { GenericRepository } from './repository/GenericRepository';
 import { ViewRepository } from './repository/ViewRepository';
+import { GenericSearchService } from './service/GenericSearchService';
 // import { GenericSearchService } from './service/GenericSearchService';
 import { GenericService } from './service/GenericService';
 import { ViewService } from './service/ViewService';

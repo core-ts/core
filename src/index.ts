@@ -80,6 +80,7 @@ export class ViewManager<T, ID> implements ViewService<T, ID> {
     return (this.r.exist ? this.r.exist(id, ctx) : Promise.resolve(false));
   }
 }
+// tslint:disable-next-line:max-classes-per-file
 export class GenericManager<T, ID> extends ViewManager<T, ID> implements GenericService<T, ID, number> {
   constructor(protected repository: GenericRepository<T, ID>) {
     super(repository);
@@ -105,6 +106,7 @@ export class GenericManager<T, ID> extends ViewManager<T, ID> implements Generic
     return (this.repository.delete ? this.repository.delete(id, ctx) : Promise.resolve(-1));
   }
 }
+// tslint:disable-next-line:max-classes-per-file
 export class Manager<T, ID, F extends Filter> extends GenericManager<T, ID> implements GenericSearchService<T, ID, number, F> {
   constructor(public find: Search<T, F>, repo: GenericRepository<T, ID>) {
     super(repo);

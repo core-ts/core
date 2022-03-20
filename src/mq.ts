@@ -1,6 +1,28 @@
 interface StringMap {
   [key: string]: string;
 }
+export interface NumberMap {
+  [key: number]: number;
+}
+export type Handle<T> = (data: T, header?: StringMap) => Promise<number>;
+export type Consume<T> = (handle: (data: T, header?: StringMap) => Promise<number>) => void;
+export type Read<T> = Consume<T>;
+export type Subscribe<T> = Consume<T>;
+export type Receive<T> = Consume<T>;
+export type Get<T> = Consume<T>;
+export type Fetch<T> = Consume<T>;
+export type Produce<T, R> = (data: T) => Promise<R>;
+export type Write<T, R> = Produce<T, R>;
+export type Publish<T, R> = Produce<T, R>;
+export type Send<T, R> = Produce<T, R>;
+export type Put<T, R> = Produce<T, R>;
+export type Set<T, R> = Produce<T, R>;
+
+export interface RetryConfig {
+  name: string;
+  limit: number;
+}
+
 export interface Message<T, ID, R> {
   id?: ID;
   data?: T;

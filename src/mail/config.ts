@@ -1,6 +1,18 @@
-import {MailData} from './model/MailData';
+import {EmailData} from './model/EmailData';
 
-export interface SendGridConfig {
-  from: MailData;
+export interface MailConfig {
+  provider?: string;
+  from: EmailData;
   key: string;
+  smtp?: SmtpConfig;
+}
+export interface Address {
+  name: string;
+  address: string;
+}
+export interface SmtpConfig {
+  host: string;
+  port: number;
+  username: string;
+  password: string;
 }

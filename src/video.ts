@@ -64,7 +64,7 @@ export interface ListResult<T> {
   nextPageToken?: string;
 }
 export type ChannelSortType = 'title' | 'count' | 'date';
-export interface ChannelSM {
+export interface ChannelFilter {
   q?: string;
   sort?: SortType; // date, rating, relevance, title, count (for channels)
   forMine?: boolean;
@@ -78,7 +78,7 @@ export interface ChannelSM {
   topicId?: string;
 }
 export type PlaylistSortType = 'title' | 'count' | 'date';
-export interface PlaylistSM {
+export interface PlaylistFilter {
   q?: string;
   sort?: SortType; // date, rating, relevance, title, count (for channels), viewCount (for live broadcast)
   forMine?: boolean;
@@ -102,7 +102,7 @@ export type LicenseType = 'creativeCommon' | 'youtube' | 'any' | '';
 export type SyndicatedType = 'true' | 'any' | '';
 export type VideoType = 'movie' | 'episode' | 'any' | '';
 export type SortType = 'rating' | 'date' | 'count' | 'relevance' | 'title' | 'viewCount' | '';
-export interface ItemSM {
+export interface ItemFilter {
   q?: string;
   type?: ItemType; // video, channel, playlist
   duration?: Duration; // any, long (more than 20 minutes), medium (from 4 minutes to 20 minutes), short (less than 4 minutes)
@@ -384,11 +384,11 @@ export interface VideoService {
   getPopularVideos(regionCode?: string, videoCategoryId?: string, max?: number, nextPageToken?: string, fields?: string[]): Promise<ListResult<Video>>;
   getVideos(ids: string[], fields?: string[]): Promise<Video[]>;
   getVideo(id: string, fields?: string[]): Promise<Video>;
-  search(sm: ItemSM, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Item>>;
+  search(sm: ItemFilter, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Item>>;
   getRelatedVideos?(videoId: string, max?: number, nextPageToken?: string, fields?: string[]): Promise<ListResult<Item>>;
-  searchVideos?(sm: ItemSM, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Item>>;
-  searchPlaylists?(sm: PlaylistSM, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Playlist>>;
-  searchChannels?(sm: ChannelSM, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Channel>>;
+  searchVideos?(sm: ItemFilter, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Item>>;
+  searchPlaylists?(sm: PlaylistFilter, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Playlist>>;
+  searchChannels?(sm: ChannelFilter, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Channel>>;
   /**
    * @param videoId
    * @param order relevance, time (default)

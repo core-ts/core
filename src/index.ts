@@ -33,7 +33,6 @@ export * from './mail/model/MailContent';
 export * from './mail/model/PersonalizationData';
 export * from './mail/model/MailSettings';
 export * from './mail/model/ASMOptions';
-export * from './mail/service/MailService';
 export * from './mail/config';
 
 export * from './location';

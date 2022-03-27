@@ -36,6 +36,10 @@ export interface Domain {
   name?: string;
   status?: string;
 }
+export interface Item {
+  value: string;
+  text?: string;
+}
 export interface ValueText {
   value: string;
   text?: string;
@@ -125,12 +129,24 @@ export interface DiffModel<T, ID> {
   value: T;
 }
 
+export interface Achievement {
+  subject: string;
+  description: string;
+}
+export interface Skill {
+  skill: string;
+  hirable: boolean;
+}
 export interface UserFilter extends Filter {
   userId?: string;
   username?: string;
   email?: string;
   displayName?: string;
+  dateOfBirth?: DateRange;
   status?: string[]|string;
+  interests: string[];
+  skills: Skill[];
+  achievements: Achievement[];
 }
 export interface RoleFilter extends Filter {
   roleId?: string;

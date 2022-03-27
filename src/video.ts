@@ -127,7 +127,7 @@ export interface ItemFilter {
   syndicated?: SyndicatedType; // any, true
   videoType?: SyndicatedType; // any, episode, movie
 }
-export interface Item extends Title, Thumbnail, ChannelInfo {
+export interface VideoItem extends Title, Thumbnail, ChannelInfo {
   kind?: string; // video, channel, playlist
   id?: string;
   liveBroadcastContent?: string; // upcoming, live, none
@@ -384,9 +384,9 @@ export interface VideoService {
   getPopularVideos(regionCode?: string, videoCategoryId?: string, max?: number, nextPageToken?: string, fields?: string[]): Promise<ListResult<Video>>;
   getVideos(ids: string[], fields?: string[]): Promise<Video[]>;
   getVideo(id: string, fields?: string[]): Promise<Video>;
-  search(sm: ItemFilter, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Item>>;
-  getRelatedVideos?(videoId: string, max?: number, nextPageToken?: string, fields?: string[]): Promise<ListResult<Item>>;
-  searchVideos?(sm: ItemFilter, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Item>>;
+  search(sm: ItemFilter, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<VideoItem>>;
+  getRelatedVideos?(videoId: string, max?: number, nextPageToken?: string, fields?: string[]): Promise<ListResult<VideoItem>>;
+  searchVideos?(sm: ItemFilter, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<VideoItem>>;
   searchPlaylists?(sm: PlaylistFilter, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Playlist>>;
   searchChannels?(sm: ChannelFilter, max?: number, nextPageToken?: string | number, fields?: string[]): Promise<ListResult<Channel>>;
   /**

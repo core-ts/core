@@ -144,9 +144,9 @@ export interface UserFilter extends Filter {
   displayName?: string;
   dateOfBirth?: DateRange;
   status?: string[]|string;
-  interests: string[];
-  skills: Skill[];
-  achievements: Achievement[];
+  interests?: string[];
+  skills?: Skill[];
+  achievements?: Achievement[];
 }
 export interface RoleFilter extends Filter {
   roleId?: string;

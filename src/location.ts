@@ -141,3 +141,12 @@ export interface TourFilter extends Filter {
   endTime?: Date|DateRange;
   locations?: string[];
 }
+export interface Rate {
+  id: string;
+  locationId: string;
+  rateTime: Date;
+  userId: string;
+  rate: number;
+  review: string;
+  version?: number;
+}

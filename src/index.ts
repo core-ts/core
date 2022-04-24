@@ -59,9 +59,7 @@ export class ViewManager<T, ID> implements ViewService<T, ID> {
   constructor(private r: ViewRepository<T, ID>) {
     this.metadata = this.metadata.bind(this);
     this.keys = this.keys.bind(this);
-    this.all = this.all.bind(this);
     this.load = this.load.bind(this);
-    this.exist = this.exist.bind(this);
   }
   metadata(): Attributes|undefined {
     return (this.r.metadata ? this.r.metadata() : undefined);
@@ -69,14 +67,8 @@ export class ViewManager<T, ID> implements ViewService<T, ID> {
   keys(): string[] {
     return (this.r.keys ? this.r.keys() : []);
   }
-  all(ctx?: any): Promise<T[]> {
-    return (this.r.all ? this.r.all() : Promise.resolve([]));
-  }
   load(id: ID, ctx?: any): Promise<T | null> {
     return this.r.load(id, ctx);
-  }
-  exist(id: ID, ctx?: any): Promise<boolean> {
-    return (this.r.exist ? this.r.exist(id, ctx) : Promise.resolve(false));
   }
 }
 // tslint:disable-next-line:max-classes-per-file
@@ -86,7 +78,6 @@ export class GenericManager<T, ID> extends ViewManager<T, ID> implements Generic
     this.insert = this.insert.bind(this);
     this.update = this.update.bind(this);
     this.patch = this.patch.bind(this);
-    this.save = this.save.bind(this);
     this.delete = this.delete.bind(this);
   }
   insert(obj: T, ctx?: any): Promise<number> {
@@ -97,9 +88,6 @@ export class GenericManager<T, ID> extends ViewManager<T, ID> implements Generic
   }
   patch(obj: T, ctx?: any): Promise<number> {
     return (this.repository.patch ? this.repository.patch(obj, ctx) : Promise.resolve(-1));
-  }
-  save(obj: T, ctx?: any): Promise<number> {
-    return (this.repository.save ? this.repository.save(obj, ctx) : Promise.resolve(-1));
   }
   delete(id: ID, ctx?: any): Promise<number> {
     return (this.repository.delete ? this.repository.delete(id, ctx) : Promise.resolve(-1));

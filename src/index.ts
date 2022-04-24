@@ -40,6 +40,10 @@ export * from './video';
 export * from './health';
 export * from './logger';
 
+export type DeleteFile = (name: string, directory?: string) => Promise<boolean>;
+export type Delete = (delFile: DeleteFile, url: string) => Promise<boolean>;
+export type UrlBuild = (name: string, directory?: string) => string;
+
 export type Log = (msg: string) => void;
 export type LogFunc = Log;
 
@@ -86,7 +90,7 @@ export class GenericManager<T, ID> extends ViewManager<T, ID> implements Generic
   update(obj: T, ctx?: any): Promise<number> {
     return this.repository.update(obj, ctx);
   }
-  patch(obj: T, ctx?: any): Promise<number> {
+  patch(obj: Partial<T>, ctx?: any): Promise<number> {
     return (this.repository.patch ? this.repository.patch(obj, ctx) : Promise.resolve(-1));
   }
   delete(id: ID, ctx?: any): Promise<number> {

@@ -155,3 +155,6 @@ export interface RoleFilter extends Filter {
   remark?: string;
   description?: string;
 }
+export type Validate<T> = (obj: T, patch?: boolean) => Promise<ErrorMessage[]>;
+export type Save<T> = (obj: T, ctx?: any) => Promise<number|ResultInfo<T>>;
+export type Load<T, ID> = ((id: ID, ctx?: any) => Promise<T|null>);

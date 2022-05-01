@@ -42,7 +42,8 @@ export * from './logger';
 
 export type DeleteFile = (name: string, directory?: string) => Promise<boolean>;
 export type Delete = (delFile: DeleteFile, url: string) => Promise<boolean>;
-export type UrlBuild = (name: string, directory?: string) => string;
+export type BuildUrl = (name: string, directory?: string) => string;
+export type Generate = () => string;
 
 export type Log = (msg: string) => void;
 export type LogFunc = Log;
@@ -54,6 +55,7 @@ import { ViewRepository } from './repository/ViewRepository';
 import { GenericSearchService } from './service/GenericSearchService';
 // import { GenericSearchService } from './service/GenericSearchService';
 import { GenericService } from './service/GenericService';
+import { ViewSearchService } from './service/ViewSearchService';
 import { ViewService } from './service/ViewService';
 
 export type Search<T, F> = (s: F, limit?: number, offset?: number | string, fields?: string[]) => Promise<SearchResult<T>>;
@@ -73,6 +75,16 @@ export class ViewManager<T, ID> implements ViewService<T, ID> {
   }
   load(id: ID, ctx?: any): Promise<T | null> {
     return this.r.load(id, ctx);
+  }
+}
+// tslint:disable-next-line:max-classes-per-file
+export class ViewSearchManager<T, ID, F extends Filter> extends ViewManager<T, ID> implements ViewSearchService<T, ID, F> {
+  constructor(public find: Search<T, F>, repo: ViewRepository<T, ID>) {
+    super(repo);
+    this.search = this.search.bind(this);
+  }
+  search(s: F, limit?: number, offset?: number|string, fields?: string[]): Promise<SearchResult<T>> {
+    return this.find(s, limit, offset, fields);
   }
 }
 // tslint:disable-next-line:max-classes-per-file

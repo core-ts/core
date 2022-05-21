@@ -44,6 +44,8 @@ export type DeleteFile = (name: string, directory?: string) => Promise<boolean>;
 export type Delete = (delFile: DeleteFile, url: string) => Promise<boolean>;
 export type BuildUrl = (name: string, directory?: string) => string;
 export type Generate = () => string;
+export type SaveValues = (values: string[]) => Promise<number>;
+export type SaveStrings = (values: string[]) => Promise<number>;
 export interface QueryService<T> {
   query(keyword: string, max?: number): Promise<T[]>
 }

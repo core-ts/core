@@ -49,7 +49,8 @@ export type SaveStrings = (values: string[]) => Promise<number>;
 export interface QueryService<T> {
   query(keyword: string, max?: number): Promise<T[]>
 }
-export type Query<T> = (keyword: string, max?: number) => Promise<T[]>;
+export type Get<T> = (keyword: string, max?: number) => Promise<T[]>;
+export type Load<T> = (keyword: string, max?: number) => Promise<T[]>;
 export type Log = (msg: string) => void;
 export type LogFunc = Log;
 
@@ -90,6 +91,16 @@ export class ViewSearchManager<T, ID, F extends Filter> extends ViewManager<T, I
   }
   search(s: F, limit?: number, offset?: number|string, fields?: string[]): Promise<SearchResult<T>> {
     return this.find(s, limit, offset, fields);
+  }
+}
+// tslint:disable-next-line:max-classes-per-file
+export class SearchManager<T, ID, F extends Filter> extends ViewManager<T, ID> implements ViewSearchService<T, ID, F> {
+  constructor(protected repository: ViewSearchService<T, ID, F>) {
+    super(repository);
+    this.search = this.search.bind(this);
+  }
+  search(s: F, limit?: number, offset?: number|string, fields?: string[]): Promise<SearchResult<T>> {
+    return this.repository.search(s, limit, offset, fields);
   }
 }
 // tslint:disable-next-line:max-classes-per-file

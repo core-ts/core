@@ -47,7 +47,7 @@ export type Generate = () => string;
 export type SaveValues = (values: string[]) => Promise<number>;
 export type SaveStrings = (values: string[]) => Promise<number>;
 export interface QueryService<T> {
-  query(keyword: string, max?: number): Promise<T[]>
+  query(keyword: string, max?: number): Promise<T[]>;
 }
 export type Get<T> = (keyword: string, max?: number) => Promise<T[]>;
 export type Load<T> = (keyword: string, max?: number) => Promise<T[]>;

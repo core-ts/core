@@ -158,3 +158,60 @@ export interface RoleFilter extends Filter {
 export type Validate<T> = (obj: T, patch?: boolean) => Promise<ErrorMessage[]>;
 export type Save<T> = (obj: T, ctx?: any) => Promise<number|ResultInfo<T>>;
 export type Load<T, ID> = ((id: ID, ctx?: any) => Promise<T|null>);
+
+export interface ReviewComment {
+  commentId: string;
+  id: string;
+  author: string;
+  userId: string;
+  comment: string;
+  time: Date;
+  updatedAt?: Date;
+  histories?: ShortComment[];
+  userURL?: string;
+  authorURL?: string;
+}
+export interface ShortComment {
+  comment: string;
+  time: Date;
+}
+
+export interface ReviewCommentFilter extends Filter {
+  commentId?: string;
+  id?: string;
+  author?: string;
+  userId?: string;
+  comment?: string;
+  time?: DateRange;
+  updatedAt?: DateRange;
+}
+export interface Info {
+  id: string;
+  rate: number;
+  rate1: number;
+  rate2: number;
+  rate3: number;
+  rate4: number;
+  rate5: number;
+  count: number;
+  score: number;
+}
+export interface Info10 {
+  id: string;
+  rate: number;
+  rate1: number;
+  rate2: number;
+  rate3: number;
+  rate4: number;
+  rate5: number;
+  rate6: number;
+  rate7: number;
+  rate8: number;
+  rate9: number;
+  rate10: number;
+  count: number;
+  score: number;
+}
+export interface InfoRepository<ID> {
+  exist(id: ID, ctx?: any): Promise<boolean>;
+}

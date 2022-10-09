@@ -115,6 +115,10 @@ export interface ErrorMessage {
   param?: string|number|Date;
   message?: string;
 }
+export interface ErrorHandler<T> {
+  handleError(rs: T, errors: ErrorMessage[], i?: number, filename?: string): void;
+}
+
 export interface ResultInfo<T> {
   status: number|string;
   errors?: ErrorMessage[];

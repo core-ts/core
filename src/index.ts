@@ -67,6 +67,19 @@ import { ViewService } from './service/ViewService';
 export type Search<T, F> = (s: F, limit?: number, offset?: number | string, fields?: string[]) => Promise<SearchResult<T>>;
 export type SearchFunc<T, F> = Search<T, F>;
 
+export interface ExceptionHandler {
+  handleException(rs: string, err: any, i?: number, filename?: string): void;
+}
+export interface ImportResult {
+  total: number;
+  success: number;
+}
+export interface ImportService {
+  import(): Promise<ImportResult>;
+}
+export interface Importer {
+  import(): Promise<ImportResult>;
+}
 export class ViewManager<T, ID> implements ViewService<T, ID> {
   constructor(private r: ViewRepository<T, ID>) {
     this.metadata = this.metadata.bind(this);

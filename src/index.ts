@@ -80,6 +80,18 @@ export interface ImportService {
 export interface Importer {
   import(): Promise<ImportResult>;
 }
+export interface Parser<T> {
+  parse: (data: string) => Promise<T>;
+}
+export interface Transformer<T> {
+  transform: (data: string) => Promise<T>;
+}
+export interface ExportService {
+  export(ctx?: any): Promise<number>;
+}
+export interface Exporter {
+  export(ctx?: any): Promise<number>;
+}
 export class ViewManager<T, ID> implements ViewService<T, ID> {
   constructor(private r: ViewRepository<T, ID>) {
     this.metadata = this.metadata.bind(this);

@@ -109,6 +109,10 @@ export class ViewManager<T, ID> implements ViewService<T, ID> {
   }
 }
 // tslint:disable-next-line:max-classes-per-file
+export class DefaultViewService<T, ID> extends ViewManager<T, ID> {
+}
+
+// tslint:disable-next-line:max-classes-per-file
 export class ViewSearchManager<T, ID, F extends Filter> extends ViewManager<T, ID> implements ViewSearchService<T, ID, F> {
   constructor(public find: Search<T, F>, repo: ViewRepository<T, ID>) {
     super(repo);
@@ -151,6 +155,15 @@ export class GenericManager<T, ID> extends ViewManager<T, ID> implements Generic
   }
 }
 // tslint:disable-next-line:max-classes-per-file
+export class DefaultGenericService<T, ID> extends GenericManager<T, ID> {
+}
+// tslint:disable-next-line:max-classes-per-file
+export class DefaultService<T, ID> extends GenericManager<T, ID> {
+}
+// tslint:disable-next-line:max-classes-per-file
+export class DefaultGenericSearchService<T, ID> extends GenericManager<T, ID> {
+}
+// tslint:disable-next-line:max-classes-per-file
 export class Manager<T, ID, F extends Filter> extends GenericManager<T, ID> implements GenericSearchService<T, ID, number, F> {
   constructor(public find: Search<T, F>, repo: GenericRepository<T, ID>) {
     super(repo);
@@ -160,11 +173,9 @@ export class Manager<T, ID, F extends Filter> extends GenericManager<T, ID> impl
     return this.find(s, limit, offset, fields);
   }
 }
-export const DefaultViewService = ViewManager;
-export const DefaultGenericService = GenericManager;
-export const GenericSearchManager = Manager;
-export const DefaultService = GenericManager;
-export const DefaultGenericSearchService = GenericManager;
+// tslint:disable-next-line:max-classes-per-file
+export class GenericSearchManager<T, ID, F extends Filter> extends Manager<T, ID, F> {
+}
 export interface SavedRepository<ID> {
   load(id: ID): Promise<string[]|null>;
   insert(id: ID, arr: string[]): Promise<number>;
@@ -172,7 +183,7 @@ export interface SavedRepository<ID> {
 }
 // tslint:disable-next-line:max-classes-per-file
 export class SavedService<ID, T> {
-  constructor(protected repository: SavedRepository<ID>, protected query: (ids: string[]) => Promise<T[]>, public max: number) {
+  constructor(protected repository: SavedRepository<ID>, protected query: (ids: string[]) => Promise<T[]>, public max: number, public autoRemove?: boolean) {
     this.load = this.load.bind(this);
     this.save = this.save.bind(this);
     this.remove = this.remove.bind(this);
@@ -195,9 +206,15 @@ export class SavedService<ID, T> {
         } else {
           items.push(itemId);
           if (items.length > this.max) {
-            items.shift();
+            if (this.autoRemove) {
+              items.shift();
+              return this.repository.update(id, items);
+            } else {
+              return Promise.resolve(-1);
+            }
+          } else {
+            return this.repository.update(id, items);
           }
-          return this.repository.update(id, items);
         }
       }
     });
@@ -218,4 +235,7 @@ export class SavedService<ID, T> {
       }
     });
   }
+}
+// tslint:disable-next-line:max-classes-per-file
+export class SavedManager<ID, T> extends SavedService<ID, T> {
 }

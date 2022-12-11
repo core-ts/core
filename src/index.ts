@@ -67,6 +67,40 @@ import { ViewService } from './service/ViewService';
 export type Search<T, F> = (s: F, limit?: number, offset?: number | string, fields?: string[]) => Promise<SearchResult<T>>;
 export type SearchFunc<T, F> = Search<T, F>;
 
+export interface KeypairResult {
+  rsaEncrypted: string;
+  data: {
+    shareKey: string;
+    salt: string;
+  };
+}
+export interface CryptoOption {
+  isEncoded64?: boolean;
+  convertKey2Bytes?: boolean;
+}
+export interface CryptoPort {
+  exchangeKeypair: (pk: string) => Promise<KeypairResult>;
+  encryptAESMessage: (aesKey: string, salt: string, dataJSON: string,  options?: CryptoOption) => Promise<string>;
+  decryptAESMessage: <T>(messageEncrypted: string, clientShKey: string, clientSalt: string, options?: CryptoOption) => Promise<T | string>;
+  encrypt: (pk: any, message: string) => string;
+  decrypt: (sk: any, data: string) => string;
+  encryptAES: (key: string, message: string) => string;
+  decryptAES: (key: string, ciphertext: string, iv: string) => string;
+  hashHMAC: (key: string, data: string) => string;
+  hashData: (text: string) => string;
+}
+export interface CryptoService {
+  exchangeKeypair: (pk: string) => Promise<KeypairResult>;
+  encryptAESMessage: (aesKey: string, salt: string, dataJSON: string,  options?: CryptoOption) => Promise<string>;
+  decryptAESMessage: <T>(messageEncrypted: string, clientShKey: string, clientSalt: string, options?: CryptoOption) => Promise<T | string>;
+  encrypt: (pk: any, message: string) => string;
+  decrypt: (sk: any, data: string) => string;
+  encryptAES: (key: string, message: string) => string;
+  decryptAES: (key: string, ciphertext: string, iv: string) => string;
+  hashHMAC: (key: string, data: string) => string;
+  hashData: (text: string) => string;
+}
+
 export interface ExceptionHandler {
   handleException(rs: string, err: any, i?: number, filename?: string): void;
 }

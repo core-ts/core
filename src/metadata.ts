@@ -50,6 +50,7 @@ export interface Attribute {
   typeof?: Attributes;
   true?: string|number;
   false?: string|number;
+  noValidate?: boolean;
   getString?: (v: any) => string;
 }
 export interface Attributes {

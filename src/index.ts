@@ -143,6 +143,9 @@ export class ViewManager<T, ID> implements ViewService<T, ID> {
   }
 }
 // tslint:disable-next-line:max-classes-per-file
+export class ViewUseCase<T, ID> extends ViewManager<T, ID> {
+}
+// tslint:disable-next-line:max-classes-per-file
 export class DefaultViewService<T, ID> extends ViewManager<T, ID> {
 }
 
@@ -157,6 +160,9 @@ export class ViewSearchManager<T, ID, F extends Filter> extends ViewManager<T, I
   }
 }
 // tslint:disable-next-line:max-classes-per-file
+export class ViewSearchUseCase<T, ID, F extends Filter> extends ViewSearchManager<T, ID, F> {
+}
+// tslint:disable-next-line:max-classes-per-file
 export class SearchManager<T, ID, F extends Filter> extends ViewManager<T, ID> implements ViewSearchService<T, ID, F> {
   constructor(protected repository: ViewSearchService<T, ID, F>) {
     super(repository);
@@ -165,6 +171,9 @@ export class SearchManager<T, ID, F extends Filter> extends ViewManager<T, ID> i
   search(s: F, limit?: number, offset?: number|string, fields?: string[]): Promise<SearchResult<T>> {
     return this.repository.search(s, limit, offset, fields);
   }
+}
+// tslint:disable-next-line:max-classes-per-file
+export class SearchUseCase<T, ID, F extends Filter> extends SearchManager<T, ID, F> {
 }
 // tslint:disable-next-line:max-classes-per-file
 export class GenericManager<T, ID> extends ViewManager<T, ID> implements GenericService<T, ID, number> {
@@ -189,6 +198,9 @@ export class GenericManager<T, ID> extends ViewManager<T, ID> implements Generic
   }
 }
 // tslint:disable-next-line:max-classes-per-file
+export class GenericUseCase<T, ID> extends GenericManager<T, ID> {
+}
+// tslint:disable-next-line:max-classes-per-file
 export class DefaultGenericService<T, ID> extends GenericManager<T, ID> {
 }
 // tslint:disable-next-line:max-classes-per-file
@@ -208,7 +220,13 @@ export class Manager<T, ID, F extends Filter> extends GenericManager<T, ID> impl
   }
 }
 // tslint:disable-next-line:max-classes-per-file
+export class UseCase<T, ID, F extends Filter> extends Manager<T, ID, F> {
+}
+// tslint:disable-next-line:max-classes-per-file
 export class GenericSearchManager<T, ID, F extends Filter> extends Manager<T, ID, F> {
+}
+// tslint:disable-next-line:max-classes-per-file
+export class GenericSearchUseCase<T, ID, F extends Filter> extends Manager<T, ID, F> {
 }
 export interface SavedRepository<ID> {
   load(id: ID): Promise<string[]|null>;
@@ -272,4 +290,7 @@ export class SavedService<ID, T> {
 }
 // tslint:disable-next-line:max-classes-per-file
 export class SavedManager<ID, T> extends SavedService<ID, T> {
+}
+// tslint:disable-next-line:max-classes-per-file
+export class SavedUseCase<ID, T> extends SavedService<ID, T> {
 }

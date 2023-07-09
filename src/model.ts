@@ -125,8 +125,7 @@ export interface ResultInfo<T> {
   value?: T;
   message?: string;
 }
-export type Result<T> = number | ResultInfo<T>;
-
+export type Result<T> = number | ResultInfo<T> | ErrorMessage[];
 export interface DiffModel<T, ID> {
   id?: ID;
   origin?: T;

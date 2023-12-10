@@ -105,8 +105,7 @@ export interface Filter {
 export interface SearchResult<T> {
   list: T[];
   total?: number;
-  last?: boolean;
-  nextPageToken?: string;
+  next?: string;
 }
 
 export interface ErrorMessage {
@@ -125,13 +124,34 @@ export interface ResultInfo<T> {
   value?: T;
   message?: string;
 }
-export type Result<T> = number | ResultInfo<T> | ErrorMessage[];
+export type Result<T> = number | T | ErrorMessage[];
 export interface DiffModel<T, ID> {
   id?: ID;
   origin?: T;
   value: T;
 }
-
+export interface User {
+  id: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  url?: string;
+}
+export interface History<T> {
+  id: string;
+  data: T;
+  time: Date;
+  user: User;
+  note?: string;
+}
+export interface Notification {
+  id: string;
+  time: Date;
+  notifier?: User;
+  message: string;
+  url?: string;
+  read: boolean;
+}
 export interface Achievement {
   subject: string;
   description: string;

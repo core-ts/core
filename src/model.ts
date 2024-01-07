@@ -152,6 +152,12 @@ export interface Notification {
   url?: string;
   read: boolean;
 }
+export interface Attachment {
+  originalFilename: string;
+  filename: string;
+  url: string;
+  size: number;
+}
 export interface Achievement {
   subject: string;
   description: string;

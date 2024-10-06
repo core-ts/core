@@ -179,13 +179,13 @@ export class SearchUseCase<T, ID, F extends Filter> extends SearchManager<T, ID,
 export class GenericManager<T, ID> extends ViewManager<T, ID> implements GenericService<T, ID, number> {
   constructor(protected repository: GenericRepository<T, ID>) {
     super(repository);
-    this.insert = this.insert.bind(this);
+    this.create = this.create.bind(this);
     this.update = this.update.bind(this);
     this.patch = this.patch.bind(this);
     this.delete = this.delete.bind(this);
   }
-  insert(obj: T, ctx?: any): Promise<number> {
-    return this.repository.insert(obj, ctx);
+  create(obj: T, ctx?: any): Promise<number> {
+    return this.repository.create(obj, ctx);
   }
   update(obj: T, ctx?: any): Promise<number> {
     return this.repository.update(obj, ctx);
@@ -230,7 +230,7 @@ export class GenericSearchUseCase<T, ID, F extends Filter> extends Manager<T, ID
 }
 export interface SavedRepository<ID> {
   load(id: ID): Promise<string[]|null>;
-  insert(id: ID, arr: string[]): Promise<number>;
+  create(id: ID, arr: string[]): Promise<number>;
   update(id: ID, arr: string[]): Promise<number>;
 }
 // tslint:disable-next-line:max-classes-per-file
@@ -251,7 +251,7 @@ export class SavedService<ID, T> {
   save(id: ID, itemId: string): Promise<number> {
     return this.repository.load(id).then(items => {
       if (items == null) {
-        return this.repository.insert(id, [itemId]);
+        return this.repository.create(id, [itemId]);
       } else {
         if (items.includes(itemId)) {
           return Promise.resolve(0);

@@ -51,6 +51,7 @@ export interface Attribute {
   true?: string|number;
   false?: string|number;
   noValidate?: boolean;
+  resource?: string;
   getString?: (v: any) => string;
 }
 export interface Attributes {

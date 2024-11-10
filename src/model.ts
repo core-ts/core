@@ -88,19 +88,19 @@ export interface NumberRange {
 
 export interface Filter {
   page?: number;
-  limit?: number;
-  firstLimit?: number;
+  limit: number;
+  // firstLimit?: number;
   fields?: string[];
   sort?: string;
-  currentUserId?: string;
+  // currentUserId?: string;
 
   q?: string;
-  keyword?: string;
-  excluding?: string[]|number[];
-  refId?: string|number;
+  // keyword?: string;
+  // excluding?: string[]|number[];
+  // refId?: string|number;
 
-  pageIndex?: number;
-  pageSize?: number;
+  // pageIndex?: number;
+  // pageSize?: number;
 }
 export interface SearchResult<T> {
   list: T[];

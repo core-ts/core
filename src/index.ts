@@ -64,7 +64,7 @@ import { GenericService } from './service/GenericService';
 import { ViewSearchService } from './service/ViewSearchService';
 import { ViewService } from './service/ViewService';
 
-export type Search<T, F> = (s: F, limit?: number, offset?: number | string, fields?: string[]) => Promise<SearchResult<T>>;
+export type Search<T, F> = (s: F, limit: number, page?: number | string, fields?: string[]) => Promise<SearchResult<T>>;
 export type SearchFunc<T, F> = Search<T, F>;
 
 export interface KeypairResult {
@@ -155,8 +155,8 @@ export class ViewSearchManager<T, ID, F extends Filter> extends ViewManager<T, I
     super(repo);
     this.search = this.search.bind(this);
   }
-  search(s: F, limit?: number, offset?: number|string, fields?: string[]): Promise<SearchResult<T>> {
-    return this.find(s, limit, offset, fields);
+  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
+    return this.find(s, limit, page, fields);
   }
 }
 // tslint:disable-next-line:max-classes-per-file
@@ -168,8 +168,8 @@ export class SearchManager<T, ID, F extends Filter> extends ViewManager<T, ID> i
     super(repository);
     this.search = this.search.bind(this);
   }
-  search(s: F, limit?: number, offset?: number|string, fields?: string[]): Promise<SearchResult<T>> {
-    return this.repository.search(s, limit, offset, fields);
+  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
+    return this.repository.search(s, limit, page, fields);
   }
 }
 // tslint:disable-next-line:max-classes-per-file
@@ -215,8 +215,8 @@ export class Manager<T, ID, F extends Filter> extends GenericManager<T, ID> impl
     super(repo);
     this.search = this.search.bind(this);
   }
-  search(s: F, limit?: number, offset?: number|string, fields?: string[]): Promise<SearchResult<T>> {
-    return this.find(s, limit, offset, fields);
+  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
+    return this.find(s, limit, page, fields);
   }
 }
 // tslint:disable-next-line:max-classes-per-file

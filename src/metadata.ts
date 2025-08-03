@@ -35,10 +35,10 @@ export interface Attribute {
   nopatch?: boolean;
   version?: boolean;
   length?: number;
-  min?: number;
-  max?: number;
-  gt?: number;
-  lt?: number;
+  min?: number | Date | string;
+  max?: number | Date | string;
+  gt?: number | Date | string;
+  lt?: number | Date | string;
   precision?: number;
   scale?: number;
   exp?: RegExp | string;

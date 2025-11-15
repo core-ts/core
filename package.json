@@ -1,6 +1,6 @@
 {
   "name": "onecore",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "onecore",
   "main": "./lib/index.js",
   "types": "./src/index.ts",

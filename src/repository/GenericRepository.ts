@@ -12,3 +12,9 @@ export interface Repository<T, ID> extends ViewRepository<T, ID> {
   patch(obj: Partial<T>, ctx?: any): Promise<number>;
   delete(id: ID, ctx?: any): Promise<number>;
 }
+export interface CRUDRepository<T, ID> extends ViewRepository<T, ID> {
+  create(obj: T, ctx?: any): Promise<number>;
+  update(obj: T, ctx?: any): Promise<number>;
+  patch(obj: Partial<T>, ctx?: any): Promise<number>;
+  delete(id: ID, ctx?: any): Promise<number>;
+}

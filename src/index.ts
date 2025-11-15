@@ -228,64 +228,34 @@ export class GenericSearchManager<T, ID, F extends Filter> extends Manager<T, ID
 // tslint:disable-next-line:max-classes-per-file
 export class GenericSearchUseCase<T, ID, F extends Filter> extends Manager<T, ID, F> {
 }
-export interface SavedRepository<ID> {
-  load(id: ID): Promise<string[]|null>;
-  create(id: ID, arr: string[]): Promise<number>;
-  update(id: ID, arr: string[]): Promise<number>;
+export interface SavedRepository<UID, ID> {
+  isSaved(userId: UID, id: ID): Promise<boolean>
+  save(userId: UID, id: ID): Promise<number>
+  remove(userId: UID, id: ID): Promise<number>
+  count(userId: UID): Promise<number>
 }
+
 // tslint:disable-next-line:max-classes-per-file
-export class SavedService<ID, T> {
-  constructor(protected repository: SavedRepository<ID>, protected query: (ids: string[]) => Promise<T[]>, public max: number, public autoRemove?: boolean) {
-    this.load = this.load.bind(this);
+export class SavedService<UID, ID> {
+  constructor(protected savedRepository: SavedRepository<UID, ID>, protected max: number) {
+    this.isSaved = this.isSaved.bind(this);
     this.save = this.save.bind(this);
     this.remove = this.remove.bind(this);
   }
-  load(id: ID): Promise<T[]> {
-    return this.repository.load(id).then(items => {
-      if (!items || items.length === 0) {
-        return [];
-      }
-      return this.query(items);
-    });
+  isSaved(userId: UID, id: ID): Promise<boolean> {
+    return this.savedRepository.isSaved(userId, id)
   }
-  save(id: ID, itemId: string): Promise<number> {
-    return this.repository.load(id).then(items => {
-      if (items == null) {
-        return this.repository.create(id, [itemId]);
+  save(userId: UID, id: ID): Promise<number> {
+    return this.savedRepository.count(userId).then((count) => {
+      if (count >= this.max) {
+        return -1
       } else {
-        if (items.includes(itemId)) {
-          return Promise.resolve(0);
-        } else {
-          items.push(itemId);
-          if (items.length > this.max) {
-            if (this.autoRemove) {
-              items.shift();
-              return this.repository.update(id, items);
-            } else {
-              return Promise.resolve(-1);
-            }
-          } else {
-            return this.repository.update(id, items);
-          }
-        }
+        return this.savedRepository.save(userId, id)
       }
-    });
+    })
   }
-  remove(id: ID, itemId: string): Promise<number> {
-    return this.repository.load(id).then(items => {
-      if (items == null) {
-        return Promise.resolve(0);
-      } else {
-        if (items.includes(itemId)) {
-          items = items.filter((item: any) => {
-            return item !== itemId;
-          });
-          return this.repository.update(id, items);
-        } else {
-          return Promise.resolve(0);
-        }
-      }
-    });
+  remove(userId: UID, id: ID): Promise<number> {
+    return this.savedRepository.remove(userId, id)
   }
 }
 // tslint:disable-next-line:max-classes-per-file

@@ -57,14 +57,10 @@ export type LogFunc = Log;
 import { Attributes } from './metadata';
 import { Filter, SearchResult } from './model';
 // import { GenericRepository } from './repository/GenericRepository';
-import { ViewRepository } from './repository/ViewRepository';
 import { GenericSearchService } from './service/GenericSearchService';
 // import { GenericSearchService } from './service/GenericSearchService';
 import { GenericService } from './service/GenericService';
-import { ViewSearchService } from './service/ViewSearchService';
-import { ViewService } from './service/ViewService';
 import { SearchRepository } from './repository/SearchRepository';
-import { ViewSearchRepository } from './repository/ViewSearchRepository';
 import { GenericSearchRepository } from './repository/GenericSearchRepository';
 
 export type Search<T, F> = (s: F, limit: number, page?: number | string, fields?: string[]) => Promise<SearchResult<T>>;
@@ -129,85 +125,107 @@ export interface ExportService {
 export interface Exporter {
   export(ctx?: any): Promise<number>;
 }
-export class ViewUseCase<T, ID> implements ViewService<T, ID> {
-  constructor(private r: ViewRepository<T, ID>) {
-    this.metadata = this.metadata.bind(this);
-    this.keys = this.keys.bind(this);
-    this.load = this.load.bind(this);
-  }
-  metadata(): Attributes|undefined {
-    return (this.r.metadata ? this.r.metadata() : undefined);
-  }
-  keys(): string[] {
-    return (this.r.keys ? this.r.keys() : []);
-  }
-  load(id: ID, ctx?: any): Promise<T | null> {
-    return this.r.load(id, ctx);
-  }
-}
-
-// tslint:disable-next-line:max-classes-per-file
-export class ViewManager<T, ID> extends ViewUseCase<T, ID> {
-}
 
 // tslint:disable-next-line:max-classes-per-file
 export class SearchUseCase<T, F extends Filter> {
-  constructor(protected repo: SearchRepository<T, F>) {
+  constructor(protected repository: SearchRepository<T, F>) {
     this.search = this.search.bind(this);
-  }
-  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
-    return this.repo.search(s, limit, page, fields);
-  }
-}
-export const SearchManager = SearchUseCase
-// tslint:disable-next-line:max-classes-per-file
-export class ViewSearchUseCase<T, ID, F extends Filter> extends ViewUseCase<T, ID> implements ViewSearchService<T, ID, F> {
-  constructor(protected repo: ViewSearchRepository<T, ID, Filter>) {
-    super(repo);
-    this.search = this.search.bind(this);
-  }
-  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
-    return this.repo.search(s, limit, page, fields);
-  }
-}
-// tslint:disable-next-line:max-classes-per-file
-export class ViewSearchManger<T, ID, F extends Filter> extends ViewSearchUseCase<T, ID, F> {
-}
-// tslint:disable-next-line:max-classes-per-file
-export class GenericUseCase<T, ID> extends ViewUseCase<T, ID> implements GenericService<T, ID, number> {
-  constructor(private repo: GenericRepository<T, ID>) {
-    super(repo);
-    this.create = this.create.bind(this);
-    this.update = this.update.bind(this);
-    this.patch = this.patch.bind(this);
-    this.delete = this.delete.bind(this);
-  }
-  create(obj: T, ctx?: any): Promise<number> {
-    return this.repo.create(obj, ctx);
-  }
-  update(obj: T, ctx?: any): Promise<number> {
-    return this.repo.update(obj, ctx);
-  }
-  patch(obj: Partial<T>, ctx?: any): Promise<number> {
-    return (this.repo.patch ? this.repo.patch(obj, ctx) : Promise.resolve(-1));
-  }
-  delete(id: ID, ctx?: any): Promise<number> {
-    return (this.repo.delete ? this.repo.delete(id, ctx) : Promise.resolve(-1));
-  }
-}
-export const GenericManager = GenericUseCase
-// tslint:disable-next-line:max-classes-per-file
-export class UseCase<T, ID, F extends Filter> extends GenericUseCase<T, ID> implements GenericSearchService<T, ID, number, F> {
-  constructor(protected repository: GenericSearchRepository<T, ID, F>) {
-    super(repository);
   }
   search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
     return this.repository.search(s, limit, page, fields);
   }
 }
-// tslint:disable-next-line:max-classes-per-file
-export class Manager<T, ID, F extends Filter> extends UseCase<T, ID, F> {
+export const SearchManager = SearchUseCase
+
+interface WriterRepo<T> {
+  create(obj: T, ctx?: any): Promise<number>;
+  update(obj: T, ctx?: any): Promise<number>;
+  patch(obj: Partial<T>, ctx?: any): Promise<number>;
 }
+// tslint:disable-next-line:max-classes-per-file
+export class Writer<T> {
+  constructor(protected repository: WriterRepo<T>) {
+    this.create = this.create.bind(this);
+    this.update = this.update.bind(this);
+    this.patch = this.patch.bind(this);
+  }
+  create(obj: T, ctx?: any): Promise<number> {
+    return this.repository.create(obj, ctx);
+  }
+  update(obj: T, ctx?: any): Promise<number> {
+    return this.repository.update(obj, ctx);
+  }
+  patch(obj: Partial<T>, ctx?: any): Promise<number> {
+    return (this.repository.patch ? this.repository.patch(obj, ctx) : Promise.resolve(-1));
+  }
+}
+
+interface SearchWriterRepo<T, F extends Filter> {
+  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>>
+  create(obj: T, ctx?: any): Promise<number>;
+  update(obj: T, ctx?: any): Promise<number>;
+  patch(obj: Partial<T>, ctx?: any): Promise<number>;
+}
+// tslint:disable-next-line:max-classes-per-file
+export class SearchWriter<T, F extends Filter> extends Writer<T> {
+  constructor(protected repository: SearchWriterRepo<T, F>) {
+    super(repository)
+    this.search = this.search.bind(this);
+  }
+  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
+    return this.repository.search(s, limit, page, fields);
+  }
+}
+
+// tslint:disable-next-line:max-classes-per-file
+export class UseCase<T, ID, F extends Filter> extends SearchWriter<T, F> implements GenericSearchService<T, ID, number, F> {
+  constructor(protected repository: GenericSearchRepository<T, ID, F>) {
+    super(repository);
+    this.metadata = this.metadata.bind(this);
+    this.keys = this.keys.bind(this);
+    this.load = this.load.bind(this);
+    this.delete = this.delete.bind(this);
+  }
+  metadata(): Attributes|undefined {
+    return (this.repository.metadata ? this.repository.metadata() : undefined);
+  }
+  keys(): string[] {
+    return (this.repository.keys ? this.repository.keys() : []);
+  }
+  load(id: ID, ctx?: any): Promise<T | null> {
+    return this.repository.load(id, ctx);
+  }
+  delete(id: ID, ctx?: any): Promise<number> {
+    return this.repository.delete(id, ctx);
+  }
+}
+
+// tslint:disable-next-line:max-classes-per-file
+export class GenericUseCase<T, ID> extends Writer<T> implements GenericService<T, ID, number> {
+  constructor(protected repository: GenericRepository<T, ID>) {
+    super(repository);
+    this.metadata = this.metadata.bind(this);
+    this.keys = this.keys.bind(this);
+    this.load = this.load.bind(this);
+    this.delete = this.delete.bind(this);
+  }
+  metadata(): Attributes|undefined {
+    return (this.repository.metadata ? this.repository.metadata() : undefined);
+  }
+  keys(): string[] {
+    return (this.repository.keys ? this.repository.keys() : []);
+  }
+  load(id: ID, ctx?: any): Promise<T | null> {
+    return this.repository.load(id, ctx);
+  }
+  delete(id: ID, ctx?: any): Promise<number> {
+    return this.repository.delete(id, ctx);
+  }
+}
+export const CRUDUseCase = GenericUseCase
+export const GenericManager = GenericUseCase
+export const CRUDManager = GenericUseCase
+
 export interface SavedRepository<UID, ID> {
   isSaved(userId: UID, id: ID): Promise<boolean>
   save(userId: UID, id: ID): Promise<number>
@@ -237,9 +255,6 @@ export class SavedService<UID, ID> {
   remove(userId: UID, id: ID): Promise<number> {
     return this.savedRepository.remove(userId, id)
   }
-}
-// tslint:disable-next-line:max-classes-per-file
-export class SavedManager<ID, T> extends SavedService<ID, T> {
 }
 // tslint:disable-next-line:max-classes-per-file
 export class SavedUseCase<ID, T> extends SavedService<ID, T> {

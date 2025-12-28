@@ -55,10 +55,8 @@ export type Log = (msg: string) => void;
 export type LogFunc = Log;
 
 import { Attributes } from './metadata';
-import { Filter, SearchResult } from './model';
-// import { GenericRepository } from './repository/GenericRepository';
+import { ErrorMessage, Filter, SearchResult } from './model';
 import { GenericSearchService } from './service/GenericSearchService';
-// import { GenericSearchService } from './service/GenericSearchService';
 import { GenericService } from './service/GenericService';
 import { SearchRepository } from './repository/SearchRepository';
 import { GenericSearchRepository } from './repository/GenericSearchRepository';
@@ -258,4 +256,7 @@ export class SavedService<UID, ID> {
 }
 // tslint:disable-next-line:max-classes-per-file
 export class SavedUseCase<ID, T> extends SavedService<ID, T> {
+}
+export function isSuccessful<T>(res: number | T | ErrorMessage[]): boolean {
+  return (typeof res === "number" && res <= 0) || Array.isArray(res) ? false : true
 }

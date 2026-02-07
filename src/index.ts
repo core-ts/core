@@ -7,23 +7,9 @@ export * from './validator';
 export * from './loader';
 export * from './model';
 
-import {GenericRepository} from './repository/GenericRepository';
-
-export * from './repository/ViewRepository';
-export * from './repository/GenericRepository';
-export * from './repository/SearchRepository';
-export * from './repository/ViewSearchRepository';
-export * from './repository/GenericSearchRepository';
-
-export * from './service/ViewService';
-export * from './service/GenericService';
-export * from './service/SearchService';
-export * from './service/ViewSearchService';
-export * from './service/GenericSearchService';
-export * from './service/DiffService';
-export * from './service/ApprService';
-export * from './service/DiffApprService';
-export * from './service/GenericSearchDiffApprService';
+import { GenericRepository, SearchRepository, GenericSearchRepository, Transaction } from './db';
+import { GenericSearchService, GenericService } from './service';
+export * from './service';
 
 export * from './mail/model/AttachmentData';
 export * from './mail/model/TrackingSettings';
@@ -55,14 +41,26 @@ export type Log = (msg: string) => void;
 export type LogFunc = Log;
 
 import { Attributes } from './metadata';
-import { ErrorMessage, Filter, SearchResult } from './model';
-import { GenericSearchService } from './service/GenericSearchService';
-import { GenericService } from './service/GenericService';
-import { SearchRepository } from './repository/SearchRepository';
-import { GenericSearchRepository } from './repository/GenericSearchRepository';
+import { Filter, SearchResult } from './model';
 
 export type Search<T, F> = (s: F, limit: number, page?: number | string, fields?: string[]) => Promise<SearchResult<T>>;
 export type SearchFunc<T, F> = Search<T, F>;
+
+export interface Notification {
+  id?: string
+  sender: string
+  receiver: string
+  url?: string
+  message: string
+}
+export interface NotificationPort {
+  push(notification: Notification): Promise<number>
+  pushNotifications(notifications: Notification[]): Promise<number>
+}
+export interface NotificationRepository {
+  push(notification: Notification): Promise<number>
+  pushNotifications(notifications: Notification[]): Promise<number>
+}
 
 export interface KeypairResult {
   rsaEncrypted: string;
@@ -136,9 +134,9 @@ export class SearchUseCase<T, F extends Filter> {
 export const SearchManager = SearchUseCase
 
 interface WriterRepo<T> {
-  create(obj: T, ctx?: any): Promise<number>;
-  update(obj: T, ctx?: any): Promise<number>;
-  patch(obj: Partial<T>, ctx?: any): Promise<number>;
+  create(obj: T, ctx?: Transaction): Promise<number>;
+  update(obj: T, ctx?: Transaction): Promise<number>;
+  patch(obj: Partial<T>, ctx?: Transaction): Promise<number>;
 }
 // tslint:disable-next-line:max-classes-per-file
 export class Writer<T> {
@@ -147,22 +145,22 @@ export class Writer<T> {
     this.update = this.update.bind(this);
     this.patch = this.patch.bind(this);
   }
-  create(obj: T, ctx?: any): Promise<number> {
-    return this.repository.create(obj, ctx);
+  create(obj: T): Promise<number> {
+    return this.repository.create(obj);
   }
-  update(obj: T, ctx?: any): Promise<number> {
-    return this.repository.update(obj, ctx);
+  update(obj: T): Promise<number> {
+    return this.repository.update(obj);
   }
-  patch(obj: Partial<T>, ctx?: any): Promise<number> {
-    return (this.repository.patch ? this.repository.patch(obj, ctx) : Promise.resolve(-1));
+  patch(obj: Partial<T>): Promise<number> {
+    return (this.repository.patch ? this.repository.patch(obj) : Promise.resolve(-1));
   }
 }
 
 interface SearchWriterRepo<T, F extends Filter> {
   search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>>
-  create(obj: T, ctx?: any): Promise<number>;
-  update(obj: T, ctx?: any): Promise<number>;
-  patch(obj: Partial<T>, ctx?: any): Promise<number>;
+  create(obj: T, ctx?: Transaction): Promise<number>;
+  update(obj: T, ctx?: Transaction): Promise<number>;
+  patch(obj: Partial<T>, ctx?: Transaction): Promise<number>;
 }
 // tslint:disable-next-line:max-classes-per-file
 export class SearchWriter<T, F extends Filter> extends Writer<T> {
@@ -190,11 +188,11 @@ export class UseCase<T, ID, F extends Filter> extends SearchWriter<T, F> impleme
   keys(): string[] {
     return (this.repository.keys ? this.repository.keys() : []);
   }
-  load(id: ID, ctx?: any): Promise<T | null> {
-    return this.repository.load(id, ctx);
+  load(id: ID): Promise<T | null> {
+    return this.repository.load(id);
   }
-  delete(id: ID, ctx?: any): Promise<number> {
-    return this.repository.delete(id, ctx);
+  delete(id: ID): Promise<number> {
+    return this.repository.delete(id);
   }
 }
 
@@ -207,17 +205,17 @@ export class GenericUseCase<T, ID> extends Writer<T> implements GenericService<T
     this.load = this.load.bind(this);
     this.delete = this.delete.bind(this);
   }
-  metadata(): Attributes|undefined {
+  metadata(): Attributes | undefined {
     return (this.repository.metadata ? this.repository.metadata() : undefined);
   }
   keys(): string[] {
     return (this.repository.keys ? this.repository.keys() : []);
   }
-  load(id: ID, ctx?: any): Promise<T | null> {
-    return this.repository.load(id, ctx);
+  load(id: ID): Promise<T | null> {
+    return this.repository.load(id);
   }
-  delete(id: ID, ctx?: any): Promise<number> {
-    return this.repository.delete(id, ctx);
+  delete(id: ID): Promise<number> {
+    return this.repository.delete(id);
   }
 }
 export const CRUDUseCase = GenericUseCase
@@ -254,9 +252,4 @@ export class SavedService<UID, ID> {
     return this.savedRepository.remove(userId, id)
   }
 }
-// tslint:disable-next-line:max-classes-per-file
-export class SavedUseCase<ID, T> extends SavedService<ID, T> {
-}
-export function isSuccessful<T>(res: number | T | ErrorMessage[]): boolean {
-  return (typeof res === "number" && res <= 0) || Array.isArray(res) ? false : true
-}
+export const SavedUseCase = SavedService

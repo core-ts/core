@@ -20,10 +20,10 @@ export interface ModuleLoader {
   load(): Promise<Module[]>;
 }
 export interface Tracking {
-  createdAt?: Date;
+  createdAt: Date;
   createdBy?: string;
   updatedAt?: Date;
-  updatedBy?: string;
+  updatedBy: string;
 }
 export interface Version {
   version?: number;

@@ -34,6 +34,8 @@ export interface Attribute {
   noupdate?: boolean;
   nopatch?: boolean;
   version?: boolean;
+  createdAt?: boolean;
+  updatedAt?: boolean;
   length?: number;
   min?: number | Date | string;
   max?: number | Date | string;

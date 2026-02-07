@@ -17,9 +17,9 @@ interface StringMap {
 export interface Executor {
   driver: string;
   param(i: number): string;
-  exec(sql: string, args?: any[], tx?: Transaction): Promise<number>;
-  execBatch(statements: Statement[], firstSuccess?: boolean, tx?: Transaction): Promise<number>;
-  query<T>(sql: string, args?: any[], m?: StringMap, bools?: Attribute[], tx?: Transaction): Promise<T[]>;
+  execute(sql: string, args?: any[], ctx?: any): Promise<number>
+  executeBatch(statements: Statement[], firstSuccess?: boolean, ctx?: any): Promise<number>
+  query<T>(sql: string, args?: any[], m?: StringMap, bools?: Attribute[], ctx?: any): Promise<T[]>
 }
 export interface Transaction extends Executor {
   commit(): Promise<void>
@@ -33,7 +33,7 @@ export interface DB extends Executor {
 export interface ViewRepository<T, ID> {
   metadata?(): Attributes|undefined;
   keys?(): string[];
-  load(id: ID, tx?: Transaction): Promise<T|null>;
+  load(id: ID, tx?: Transaction): Promise<T | null>;
 }
 export interface SearchRepository<T, F extends Filter> {
   search(s: F, limit: number, offset?: number|string, fields?: string[], tx?: Transaction): Promise<SearchResult<T>>;
@@ -68,9 +68,9 @@ export interface HistoryRepository<T> {
 
 
 export interface ViewPort<T, ID> {
-  metadata?(): Attributes|undefined;
+  metadata?(): Attributes | undefined;
   keys?(): string[];
-  load(id: ID, tx?: Transaction): Promise<T|null>;
+  load(id: ID, tx?: Transaction): Promise<T | null>;
 }
 export interface SearchPort<T, F extends Filter> {
   search(s: F, limit: number, offset?: number|string, fields?: string[], tx?: Transaction): Promise<SearchResult<T>>;

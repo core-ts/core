@@ -62,7 +62,7 @@ export interface ApproversRepository {
   getApprovers(tx?: Transaction): Promise<string[]>
 }
 export interface HistoryRepository<T> {
-  create(id: string, author: string, action: string, data: T, tx?: Transaction): Promise<number>
+  create(id: string, author: string, data: T, tx?: Transaction): Promise<number>
 }
 
 
@@ -99,5 +99,5 @@ export interface ApproversPort {
   getApprovers(tx?: Transaction): Promise<string[]>
 }
 export interface HistoryPort<T> {
-  create(id: string, author: string, action: string, data: T, tx?: Transaction): Promise<number>
+  create(id: string, author: string, data: T, tx?: Transaction): Promise<number>
 }

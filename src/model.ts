@@ -44,14 +44,17 @@ export interface Domain {
   status?: string;
 }
 export interface Item {
+  id?: string;
   value: string;
   text?: string;
 }
 export interface ValueText {
+  id?: string;
   value: string;
   text?: string;
 }
 export interface ValueCode {
+  id?: string;
   value: string;
   code?: string;
 }

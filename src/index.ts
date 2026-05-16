@@ -253,3 +253,20 @@ export class SavedService<UID, ID> {
   }
 }
 export const SavedUseCase = SavedService
+
+export interface FollowRepository<ID> {
+  follow(id: ID, target: ID): Promise<number>
+  unfollow(id: ID, target: ID): Promise<number>
+}
+export class FollowService<ID> {
+  constructor(protected followRepository: FollowRepository<ID>) {
+    this.follow = this.follow.bind(this)
+    this.unfollow = this.unfollow.bind(this)
+  }
+  follow(id: ID, target: ID): Promise<number> {
+    return this.followRepository.follow(id, target)
+  }
+  unfollow(id: ID, target: ID): Promise<number> {
+    return this.followRepository.unfollow(id, target)
+  }
+}

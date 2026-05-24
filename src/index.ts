@@ -221,3 +221,14 @@ export class GenericUseCase<T, ID> extends Writer<T> implements GenericService<T
 export const CRUDUseCase = GenericUseCase
 export const GenericManager = GenericUseCase
 export const CRUDManager = GenericUseCase
+
+export interface SavedRepository<UID, ID> {
+  isSaved(userId: UID, id: ID): Promise<boolean>
+  save(userId: UID, id: ID): Promise<number>
+  remove(userId: UID, id: ID): Promise<number>
+  count(userId: UID): Promise<number>
+}
+export interface FollowRepository<ID> {
+  follow(id: ID, target: ID): Promise<number>
+  unfollow(id: ID, target: ID): Promise<number>
+}

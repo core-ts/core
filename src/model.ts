@@ -47,6 +47,7 @@ export interface Item {
   id?: string;
   value: string;
   text?: string;
+  fulltext?: string;
 }
 export interface ValueText {
   id?: string;
@@ -253,4 +254,38 @@ export interface Info10 {
 }
 export interface InfoRepository<ID> {
   exist(id: ID, ctx?: any): Promise<boolean>;
+}
+
+export interface Company {
+  id: string
+  slug: string
+  name: string
+  overview: string
+  website?: string
+  industry?: string
+  size?: string
+  logo?: string
+  coverURL?: string
+  status: string
+  
+  followerCount?: number
+  followingAt?: Date
+  followedAt?: Date
+}
+export interface Job {
+  id: string
+  slug: string
+  title: string
+  description: string
+  publishedAt?: Date
+  expiredAt?: Date
+  position?: string
+  quantity?: number
+  location?: string
+  applicantCount?: number
+  skills?: string[]
+  minSalary?: number
+  maxSalary?: number
+  companyId?: string
+  status: string
 }

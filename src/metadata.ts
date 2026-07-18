@@ -59,3 +59,9 @@ export interface Attribute {
 export interface Attributes {
   [key: string]: Attribute;
 }
+export interface FixedLengthAttribute extends Attribute {
+  length: number
+}
+export interface FixedLengthAttributes {
+  [key: string]: FixedLengthAttribute
+}

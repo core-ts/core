@@ -1,5 +1,5 @@
 export interface Locale {
-  id?: string;
+  id: string;
   countryCode: string;
   dateFormat: string;
   firstDayOfWeek: number;
@@ -10,6 +10,11 @@ export interface Locale {
   currencySymbol: string;
   currencyPattern: number;
   currencySample?: string;
+}
+export interface Currency {
+  code: string;
+  decimalDigits: number;
+  symbol: string;
 }
 
 export interface StringFormatter<T> {

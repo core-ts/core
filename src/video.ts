@@ -54,9 +54,6 @@ export interface CommentSnippet extends CommentInfo, YoutubeAuthor {
   parentId: string;
 }
 
-export interface StringMap {
-  [key: string]: string;
-}
 export interface ListResult<T> {
   list: T[];
   total?: number;

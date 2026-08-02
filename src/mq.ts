@@ -4,7 +4,8 @@ interface StringMap {
 export interface NumberMap {
   [key: number]: number;
 }
-export type Handle<T> = (data: T, header?: StringMap) => Promise<number>;
+export type Process<T, R, M> = (data: T, attributes?: StringMap, msg?: M) => Promise<R>
+export type Handle<T, R, M> = (data: T, attributes?: StringMap, msg?: M) => Promise<R>
 export type Consume<T> = (handle: (data: T, header?: StringMap) => Promise<number>) => void;
 export type Read<T> = Consume<T>;
 export type Subscribe<T> = Consume<T>;

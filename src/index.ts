@@ -6,6 +6,10 @@ export * from './cache';
 export * from './validator';
 export * from './loader';
 export * from './model';
+export * from './health';
+export * from './logger';
+
+export * from './io';
 
 import { GenericRepository, SearchRepository, GenericSearchRepository, Transaction } from './db';
 import { GenericSearchService, GenericService } from './service';
@@ -22,9 +26,8 @@ export * from './mail/model/ASMOptions';
 export * from './mail/config';
 
 export * from './location';
+export * from './job';
 export * from './video';
-export * from './health';
-export * from './logger';
 
 export type DeleteFile = (name: string, directory?: string) => Promise<boolean>;
 export type Delete = (delFile: DeleteFile, url: string) => Promise<boolean>;

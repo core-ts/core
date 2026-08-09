@@ -40,9 +40,6 @@ export interface Publisher<T, R, ID> {
 export interface Sender<T, R, ID> {
   send(data: T, attributes?: StringMap, id?: ID): Promise<R>;
 }
-export interface Writer<T, R, ID> {
-  write(data: T, attributes?: StringMap, id?: ID): Promise<R>;
-}
 
 export interface Producer<T, R, ID> {
   produce(to: string, data: T, attributes?: StringMap, id?: ID): Promise<R>;
@@ -53,10 +50,11 @@ export interface Publisher<T, R, ID> {
 export interface Sender<T, R, ID> {
   send(to: string, data: T, attributes?: StringMap, id?: ID): Promise<R>;
 }
+/*
 export interface Writer<T, R, ID> {
   write(to: string, data: T, attributes?: StringMap, id?: ID): Promise<R>;
 }
-
+*/
 export interface SimpleConsumer<T, R> {
   consume(handle: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
 }

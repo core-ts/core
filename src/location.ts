@@ -1,27 +1,5 @@
 import {DateRange, Filter, NumberRange} from './model';
 
-export interface Article {
-  id: string
-  slug: string
-  title: string
-  description?: string
-  content?: string
-  publishedAt?: Date
-  tags?: string[]
-  thumbnail?: string
-  status?: string
-  createdAt?: Date
-  authorId?: string
-  savedAt?: Date
-}
-export interface ArticleFilter extends Filter {
-  id?: string;
-  title?: string;
-  type?: string;
-  tags?: string[];
-  status?: string[]|string;
-}
-
 export interface Location {
   id?: string;
   name?: string;

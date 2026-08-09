@@ -7,9 +7,14 @@ export interface Transformer<T, S> {
   transform: (data: S) => Promise<T>
 }
 
-export interface ICSVFieldParser<T> {
+export interface CSVFieldParser<T> {
   name: string
   toString(data: T, key: string, v: string): void
+}
+export interface FixedLengthFieldParser<T> {
+  name: string
+  length: number
+  parse(data: T, key: string, v: string): void
 }
 
 export interface Writer<T> {

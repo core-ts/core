@@ -24,8 +24,8 @@ export interface LocaleStringFormatter<T> {
   format(obj: T, locale: Locale): string;
 }
 
-export interface Formatter<T> {
-  format(obj: T): T;
+export interface Formatter<T, S> {
+  format(obj: T): S;
 }
 export interface LocaleFormatter<T> {
   format(obj: T, locale: Locale): T;

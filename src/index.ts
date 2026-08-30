@@ -171,8 +171,8 @@ export class SearchWriter<T, F extends Filter> extends Writer<T> {
     super(repository)
     this.search = this.search.bind(this);
   }
-  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
-    return this.repository.search(s, limit, page, fields);
+  search(filter: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
+    return this.repository.search(filter, limit, page, fields);
   }
 }
 

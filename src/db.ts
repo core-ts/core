@@ -18,7 +18,7 @@ export interface Executor {
   driver: string
   param(i: number): string
   execute(sql: string, args?: any[]): Promise<number>
-  executeBatch(statements: Statement[], firstSuccess?: boolean): Promise<number>
+  executeBatch(statements: Statement[], requireFirstAffected?: boolean): Promise<number>
   query<T>(sql: string, args?: any[], m?: StringMap, bools?: Attribute[]): Promise<T[]>
 }
 export interface Transaction extends Executor {
@@ -35,7 +35,7 @@ export interface ViewRepository<T, ID> {
   load(id: ID, tx?: Transaction): Promise<T | null>;
 }
 export interface SearchRepository<T, F extends Filter> {
-  search(s: F, limit: number, offset?: number|string, fields?: string[], tx?: Transaction): Promise<SearchResult<T>>;
+  search(filter: F, limit: number, offset?: number|string, fields?: string[], tx?: Transaction): Promise<SearchResult<T>>;
 }
 export interface ViewSearchRepository<T, ID, F extends Filter>
   extends ViewRepository<T, ID>, SearchRepository<T, F> {

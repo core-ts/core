@@ -45,9 +45,9 @@ Without a shared foundation, each library tends to define its own interfaces and
                     │  Use Cases        │
                     └─────────┬─────────┘
                               │
-        ┌────────────┬────────┼────────┬─────────────┐
-        │            │        │        │             │
-     Database     Validation  Cache  Messaging     Logging
+        ┌──────────┬──────────┼──────────┬──────────┐
+        │          │          │          │          │
+    Database   Validation   Cache    Messaging   Logging
 ```
 
 The implementation packages depend on these contracts, while application code can depend on the contracts rather than concrete infrastructure implementations.
@@ -103,6 +103,8 @@ export interface Attribute {
 }
 ```
 
+Unlike persistence-specific or validation-specific metadata, `Attribute` is the canonical metadata model shared across the entire ecosystem.
+
 `Attribute` is intended to be shared by multiple parts of an application instead of maintaining separate metadata definitions for every subsystem.
 
 For example, the same metadata can describe:
@@ -116,6 +118,57 @@ For example, the same metadata can describe:
 * Serialization
 
 Individual libraries consume only the properties relevant to them.
+
+```
+                  Attribute
+                      │
+      ┌───────────────┼────────────────┐
+      │               │                │
+ Validation       Database        Import/Export
+      │               │                │
+validation-core   sql-core        import-service
+                 mysql2-core        export-kit
+                 mssql-core
+                 oracle-core
+                 postgres-kit
+                 cassandra-core
+                 mongodb-kit
+```
+
+Each library consumes only the properties that it understands.
+
+For example:
+
+Validation libraries use
+
+* required
+* format
+* gt
+* lt
+* resource
+* noValidate
+
+Database libraries use
+
+* noInsert
+* noUpdate
+* version
+* createdAt
+* updatedAt
+* length
+* type
+
+The same metadata definition can therefore be used for
+
+* Validation
+* Database mapping
+* CSV Import
+* CSV Export
+* Search
+* Formatting
+* Localization
+
+without duplication.
 
 ## Data types
 
@@ -169,20 +222,9 @@ export type FormatType =
 export interface Executor {
   driver: string
   param(i: number): string
-
   execute(sql: string, args?: any[]): Promise<number>
-
-  executeBatch(
-    statements: Statement[],
-    firstSuccess?: boolean
-  ): Promise<number>
-
-  query<T>(
-    sql: string,
-    args?: any[],
-    m?: StringMap,
-    bools?: Attribute[]
-  ): Promise<T[]>
+  executeBatch(statements: Statement[], requireFirstAffected?: boolean): Promise<number>
+  query<T>(sql: string, args?: any[], m?: StringMap, bools?: Attribute[]): Promise<T[]>
 }
 ```
 
@@ -264,13 +306,9 @@ The transaction abstraction is particularly useful when several repositories par
 ```ts
 export interface CRUDRepository<T, ID> {
   load(id: ID, tx?: Transaction): Promise<T | null>
-
   create(obj: T, tx?: Transaction): Promise<number>
-
   update(obj: T, tx?: Transaction): Promise<number>
-
   patch(obj: Partial<T>, tx?: Transaction): Promise<number>
-
   delete(id: ID, tx?: Transaction): Promise<number>
 }
 ```
@@ -333,8 +371,7 @@ CRUD and search repositories can be combined:
 
 ```ts
 export interface Repository<T, ID, F extends Filter>
-  extends CRUDRepository<T, ID>,
-          SearchRepository<T, F> {
+  extends CRUDRepository<T, ID>, SearchRepository<T, F> {
 }
 ```
 
@@ -361,18 +398,9 @@ export class SearchUseCase<T, F extends Filter> {
     protected repository: SearchRepository<T, F>
   ) {}
 
-  search(
-    s: F,
-    limit: number,
-    page?: number | string,
-    fields?: string[]
-  ): Promise<SearchResult<T>> {
-    return this.repository.search(
-      s,
-      limit,
-      page,
-      fields
-    )
+  search(filter: F, limit: number, page?: number | string,
+        fields?: string[]): Promise<SearchResult<T>> {
+    return this.repository.search(filter, limit, page, fields)
   }
 }
 ```
@@ -381,26 +409,20 @@ export class SearchUseCase<T, F extends Filter> {
 
 ```ts
 export class CRUDUseCase<T, ID> {
-  constructor(
-    protected repository: CRUDRepository<T, ID>
-  ) {}
+  constructor(protected repository: CRUDRepository<T, ID>) {}
 
   load(id: ID): Promise<T | null> {
     return this.repository.load(id)
   }
-
   create(obj: T): Promise<number> {
     return this.repository.create(obj)
   }
-
   update(obj: T): Promise<number> {
     return this.repository.update(obj)
   }
-
   patch(obj: Partial<T>): Promise<number> {
     return this.repository.patch(obj)
   }
-
   delete(id: ID): Promise<number> {
     return this.repository.delete(id)
   }
@@ -413,40 +435,25 @@ For applications that need both CRUD and search operations:
 
 ```ts
 export class UseCase<T, ID, F extends Filter> {
-  constructor(
-    protected repository: Repository<T, ID, F>
-  ) {}
+  constructor(protected repository: Repository<T, ID, F>) {}
 
-  search(
-    s: F,
-    limit: number,
-    page?: number | string,
-    fields?: string[]
-  ): Promise<SearchResult<T>> {
-    return this.repository.search(
-      s,
-      limit,
-      page,
-      fields
-    )
+  search(filter: F, limit: number, page?: number | string,
+        fields?: string[]): Promise<SearchResult<T>> {
+    return this.repository.search(filter, limit, page, fields)
   }
 
   load(id: ID): Promise<T | null> {
     return this.repository.load(id)
   }
-
   create(obj: T): Promise<number> {
     return this.repository.create(obj)
   }
-
   update(obj: T): Promise<number> {
     return this.repository.update(obj)
   }
-
   patch(obj: Partial<T>): Promise<number> {
     return this.repository.patch(obj)
   }
-
   delete(id: ID): Promise<number> {
     return this.repository.delete(id)
   }
@@ -462,7 +469,7 @@ Service contracts can be defined independently from the repository layer:
 ```ts
 export interface SearchService<T, F extends Filter> {
   search(
-    s: F,
+    filter: F,
     limit: number,
     page?: number | string,
     fields?: string[]
@@ -475,13 +482,9 @@ CRUD services expose application-facing operations:
 ```ts
 export interface CRUDService<T, ID> {
   load(id: ID): Promise<T | null>
-
   create(obj: T): Promise<Result<T>>
-
   update(obj: T): Promise<Result<T>>
-
   patch(obj: Partial<T>): Promise<Result<T>>
-
   delete(id: ID): Promise<number>
 }
 ```
@@ -548,6 +551,109 @@ Other
 ```
 
 These packages can share the same contracts and metadata model while remaining independently implemented.
+
+
+## Shared Interfaces
+
+`onecore` defines the common contracts used by the ecosystem.
+
+### Database
+* SearchRepository
+* CRUDRepository
+* Repository
+* Transaction
+* Statement
+* QueryBuilder
+
+Implemented by
+
+* sql-core
+* mysql2-core
+* oracle-core
+* mssql-core
+* postgres-kit
+* cassandra-core
+* mongodb-kit
+
+---
+
+### Validation
+
+* Validator<T>
+
+Implemented by
+
+* validation-core
+
+---
+
+### Cache
+
+* CachePort
+
+Implemented by
+
+* cache-plus
+* redis-plus
+
+---
+
+### Message Queue
+
+* Producer
+* Consumer
+* Publisher
+* Subscriber
+
+Implemented by
+
+* message-processing
+* redis-messaging
+* nats-plus
+* rabbitmq-transport
+* ActiveMQ libraries
+
+---
+
+### Logging
+
+* Logger
+
+Implemented by
+
+* logger-core
+
+---
+
+### Health Check
+
+* HealthChecker
+
+Implemented by
+
+* health-service
+
+---
+
+### HTTP
+
+* HttpRequest
+* HttpOptionsService
+
+Implemented by
+
+* web-clients
+
+---
+
+### Localization
+
+* Locale
+* Currency
+
+Implemented by
+
+* locale-service
 
 ## Zero-cost abstractions
 
@@ -617,319 +723,6 @@ Keep shared contracts in TypeScript interfaces and keep runtime implementations 
 ## License
 
 MIT
-
-
-# onecore
-
-> The shared foundation for the Core TS ecosystem.
-
-`onecore` provides the common contracts, metadata model, and reusable application-layer base classes used throughout the Core TS ecosystem.
-
-It allows libraries such as **sql-core**, **mysql2-core**, **postgres-kit**, **mongodb-kit**, **validation-core**, **cache-plus**, **redis-plus**, **message-processing**, **nats-plus**, **redis-messaging**, **rabbitmq-transport**, **logger-core**, and **health-service** to work together through a unified API.
-
-## Features
-
-* Common interfaces for enterprise applications
-* Unified metadata model (`Attribute`)
-* Reusable CRUD and Search use-case base classes
-* Zero-cost abstractions through TypeScript interfaces
-* Tree-shakeable architecture
-* Works in both backend and frontend applications
-* No framework dependency
-* Fully written in TypeScript
-
----
-
-# Installation
-
-```bash
-npm install onecore
-```
-
----
-
-# Why onecore?
-
-Enterprise applications often use many infrastructure libraries.
-
-For example:
-
-* Database
-* Validation
-* Cache
-* Message Queue
-* Logging
-* Health Check
-* Import/Export
-
-Without a shared foundation, every library exposes its own interfaces and metadata.
-
-```text
-Repository      (sql)
-Validator       (validation)
-Producer        (mq)
-Logger          (logger)
-Cache           (cache)
-```
-
-`onecore` provides a single common language for the entire ecosystem.
-
-```ts
-import {
-    Repository,
-    Validator,
-    Producer,
-    CachePort,
-    Logger,
-    HealthChecker
-} from "onecore";
-```
-
-Applications only depend on **onecore**, while implementation libraries implement these contracts.
-
----
-
-# Ecosystem
-
-```
-                                 Applications
-        ┌───────────────────────────────────────────────────────────────┐
-        │                                                               │
-        │  React Apps • REST APIs • Microservices • Workers • CLI       │
-        │                                                               │
-        └───────────────────────────────────────────────────────────────┘
-                                      ▲
-                                      │
-                           Reusable Use Cases (Optional)
-                     CRUD • Search • View • Generic Services
-                                      ▲
-                                      │
-    ┌─────────────────────────────────────────────────────────────────────────────────┐
-    │                                onecore                                          │
-    │                                                                                 │
-    │  • Common Interfaces                                                            │
-    │  • Unified Attribute Metadata                                                   │
-    │  • Locale & Currency                                                            │
-    │  • Shared Models                                                                │
-    │  • Reusable Service Layer                                                       │
-    └─────────────────────────────────────────────────────────────────────────────────┘
-         ▲                  ▲                  ▲                  ▲                 ▲
-         │                  │                  │                  │                 │
-         │                  │                  │                  │                 │
-┌────────────────┐ ┌────────────────┐ ┌──────────────────┐ ┌────────────────┐ ┌────────────────┐
-│    Database    │ │   Validation   │ │   Messaging      │ │ Import / Export│ │     Cache      │
-├────────────────┤ ├────────────────┤ ├──────────────────┤ ├────────────────┤ ├────────────────┤
-│ sql-core       │ │validation-core │ │message-processing│ │import-service  │ │ cache-plus     │
-│ mysql2-core    │ │                │ │nats-plus         │ │export-kit      │ │ redis-plus     │
-│ postgres-kit   │ │                │ │redis-messaging   │ │                │ │                │
-│ oracle-core    │ │                │ │rabbitmq-transport│ │                │ │                │
-│ mssql-core     │ │                │ │activemq          │ │                │ │                │
-│ mongodb-kit    │ │                │ │ibmmq-plus        │ │                │ │                │
-└────────────────┘ └────────────────┘ └──────────────────┘ └────────────────┘ └────────────────┘
-
-```
-
-All libraries share the same interfaces defined by `onecore`.
-
----
-
-# Zero-Cost Abstractions
-
-One of the goals of `onecore` is to provide a common API **without adding runtime overhead**.
-
-## Interfaces
-
-Interfaces disappear after TypeScript compilation.
-
-```ts
-import { Repository, Validator } from "onecore";
-```
-
-The generated JavaScript contains no implementation from `onecore`.
-
-## Base Classes
-
-If an application extends one of the reusable CRUD or Search use-case classes, only those classes are included in the final bundle.
-
-Modern bundlers such as Webpack, Rollup, Vite, and esbuild tree-shake unused code automatically.
-
-This allows frontend and backend projects to share the same package while keeping bundles minimal.
-
----
-
-# Unified Metadata
-
-The most important type in `onecore` is `Attribute`.
-
-Unlike persistence-specific or validation-specific metadata, `Attribute` is the canonical metadata model shared across the entire ecosystem.
-
-```
-                  Attribute
-                      │
-      ┌───────────────┼────────────────┐
-      │               │                │
- Validation       Database        Import/Export
-      │               │                │
-validation-core   sql-core        import-service
-                 mysql2-core        export-kit
-                 postgres-kit
-                 mongodb-kit
-```
-
-Each library consumes only the properties that it understands.
-
-For example:
-
-Validation libraries use
-
-* required
-* format
-* gt
-* lt
-* resource
-* noValidate
-
-Database libraries use
-
-* noInsert
-* noUpdate
-* version
-* createdAt
-* updatedAt
-* length
-* type
-
-The same metadata definition can therefore be used for
-
-* Validation
-* Database mapping
-* CSV Import
-* CSV Export
-* Search
-* Formatting
-* Localization
-
-without duplication.
-
----
-
-# Shared Interfaces
-
-`onecore` defines the common contracts used by the ecosystem.
-
-## Database
-
-* Repository
-* GenericRepository
-* SearchRepository
-* Transaction
-* Statement
-* QueryBuilder
-
-Implemented by
-
-* sql-core
-* mysql2-core
-* postgres-kit
-* mongodb-kit
-
----
-
-## Validation
-
-* Validator<T>
-
-Implemented by
-
-* validation-core
-
----
-
-## Cache
-
-* CachePort
-
-Implemented by
-
-* cache-plus
-* redis-plus
-
----
-
-## Message Queue
-
-* Producer
-* Consumer
-* Publisher
-* Subscriber
-
-Implemented by
-
-* message-processing
-* redis-messaging
-* nats-plus
-* rabbitmq-transport
-* ActiveMQ libraries
-
----
-
-## Logging
-
-* Logger
-
-Implemented by
-
-* logger-core
-
----
-
-## Health Check
-
-* HealthChecker
-
-Implemented by
-
-* health-service
-
----
-
-## HTTP
-
-* HttpRequest
-* HttpOptionsService
-
-Implemented by
-
-* web-clients
-
----
-
-## Localization
-
-* Locale
-* Currency
-
-Implemented by
-
-* locale-service
-
----
-
-# Reusable Use Cases
-
-`onecore` also provides reusable application-layer base classes.
-
-Examples include
-
-* CRUD services
-* Search services
-* View services
-
-Applications can extend these classes instead of implementing common CRUD logic repeatedly.
-
-Projects that do not use these classes pay no runtime cost.
-
----
 
 # Frontend Support
 

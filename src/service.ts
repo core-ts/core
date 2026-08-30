@@ -25,21 +25,26 @@ export interface QueryRepository<T, ID, F extends Filter> extends SearchService<
   load(id: ID): Promise<T|null>;
 }
 
+export interface CRUDService<T, ID, R> extends ViewService<T, ID> {
+  create(obj: T): Promise<R>;
+  update(obj: T): Promise<R>;
+  patch(obj: Partial<T>): Promise<R>;
+  delete(id: ID): Promise<number>;
+}
 export interface GenericService<T, ID, R> extends ViewService<T, ID> {
   create(obj: T): Promise<R>;
   update(obj: T): Promise<R>;
   patch(obj: Partial<T>): Promise<R>;
   delete(id: ID): Promise<number>;
 }
-
 export interface ViewSearchService<T, ID, F extends Filter>
   extends ViewService<T, ID>, SearchService<T, F> {
 }
 
 export interface GenericSearchService<T, ID, R, F extends Filter>
-  extends GenericService<T, ID, R>, SearchService<T, F> {
+  extends CRUDService<T, ID, R>, SearchService<T, F> {
 }
 
 export interface Service<T, ID, F extends Filter>
-  extends GenericService<T, ID, Result<T>>, SearchService<T, F> {
+  extends CRUDService<T, ID, Result<T>>, SearchService<T, F> {
 }

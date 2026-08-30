@@ -12,7 +12,7 @@ export * from './logger';
 export * from './io';
 
 import { GenericRepository, SearchRepository, GenericSearchRepository, Transaction } from './db';
-import { GenericSearchService, GenericService } from './service';
+import { GenericSearchService, CRUDService } from './service';
 export * from './service';
 
 export * from './mail/model/AttachmentData';
@@ -200,7 +200,7 @@ export class UseCase<T, ID, F extends Filter> extends SearchWriter<T, F> impleme
 }
 
 // tslint:disable-next-line:max-classes-per-file
-export class GenericUseCase<T, ID> extends Writer<T> implements GenericService<T, ID, number> {
+export class CRUDUseCase<T, ID> extends Writer<T> implements CRUDService<T, ID, number> {
   constructor(protected repository: GenericRepository<T, ID>) {
     super(repository);
     this.metadata = this.metadata.bind(this);
@@ -221,9 +221,9 @@ export class GenericUseCase<T, ID> extends Writer<T> implements GenericService<T
     return this.repository.delete(id);
   }
 }
-export const CRUDUseCase = GenericUseCase
-export const GenericManager = GenericUseCase
-export const CRUDManager = GenericUseCase
+export const GenericUseCase = CRUDUseCase
+export const GenericManager = CRUDUseCase
+export const CRUDManager = CRUDUseCase
 
 export interface SavedRepository<UID, ID> {
   isSaved(userId: UID, id: ID): Promise<boolean>

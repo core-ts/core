@@ -17,9 +17,9 @@ interface StringMap {
 export interface Executor {
   driver: string
   param(i: number): string
-  execute(sql: string, args?: any[], ctx?: any): Promise<number>
-  executeBatch(statements: Statement[], firstSuccess?: boolean, ctx?: any): Promise<number>
-  query<T>(sql: string, args?: any[], m?: StringMap, bools?: Attribute[], ctx?: any): Promise<T[]>
+  execute(sql: string, args?: any[]): Promise<number>
+  executeBatch(statements: Statement[], firstSuccess?: boolean): Promise<number>
+  query<T>(sql: string, args?: any[], m?: StringMap, bools?: Attribute[]): Promise<T[]>
 }
 export interface Transaction extends Executor {
   commit(): Promise<void>

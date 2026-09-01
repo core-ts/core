@@ -16,14 +16,19 @@ npm install onecore
 
 Large applications commonly depend on many infrastructure libraries:
 
-* Database
-* Validation
 * Cache
-* Message Queue
 * Logging
 * Health Check
-* HTTP clients
+* Validation
+* Database
+  * DB
+  * Transaction
+  * Statement
+  * Repository
+* Service
+* Message Queue
 * Import / Export
+* HTTP clients
 * Localization
 
 Without a shared foundation, each library tends to define its own interfaces and metadata.
@@ -38,11 +43,11 @@ Without a shared foundation, each library tends to define its own interfaces and
                     ┌─────────┴─────────┐
                     │      onecore      │
                     │                   │
-                    │  Interfaces       │
-                    │  Attribute        │
-                    │  Repository       │
-                    │  Transaction      │
-                    │  Use Cases        │
+                    │    Interfaces     │
+                    │    Attribute      │
+                    │    Transaction    │
+                    │    Repository     │
+                    │    Use Cases      │
                     └─────────┬─────────┘
                               │
         ┌──────────┬──────────┼──────────┬──────────┐
@@ -55,17 +60,18 @@ The implementation packages depend on these contracts, while application code ca
 ## Features
 
 * Shared TypeScript interfaces for the Core TS ecosystem
-* Unified `Attribute` metadata model
+  * Unified `Attribute` metadata model
+  * `ErrorMessage` for data validation
+  * Generic `Filter` and `SearchResult` models
 * Database executor and transaction abstractions
-* Repository abstractions for CRUD and search
+  * Type-safe database parameter abstraction
+  * Repository abstractions for CRUD and search
 * Reusable CRUD and Search use-case classes
-* Generic filtering and search result models
-* Type-safe database parameter abstraction
-* No framework dependency
-* Interfaces with no runtime representation after TypeScript compilation
-* Suitable for both backend and frontend projects
-* Tree-shakeable runtime code
 
+* Interfaces with no runtime representation after TypeScript compilation
+  * No framework dependency
+  * Suitable for both backend and frontend projects
+  * Tree-shakeable runtime code
 ## Unified metadata
 
 The central concept in `onecore` is `Attribute`.
@@ -124,13 +130,13 @@ Individual libraries consume only the properties relevant to them.
                       │
       ┌───────────────┼────────────────┐
       │               │                │
- Validation       Database        Import/Export
+  Validation      Database       Import/Export
       │               │                │
-validation-core   sql-core        import-service
-                 mysql2-core        export-kit
-                 mssql-core
+validation-core   sql-core       import-service
+                 postgres-kit      export-kit
+                 mysql2-core
                  oracle-core
-                 postgres-kit
+                 mssql-core
                  cassandra-core
                  mongodb-kit
 ```
@@ -222,9 +228,9 @@ export type FormatType =
 export interface Executor {
   driver: string
   param(i: number): string
+  query<T>(sql: string, args?: any[], m?: StringMap, bools?: Attribute[]): Promise<T[]>
   execute(sql: string, args?: any[]): Promise<number>
   executeBatch(statements: Statement[], requireFirstAffected?: boolean): Promise<number>
-  query<T>(sql: string, args?: any[], m?: StringMap, bools?: Attribute[]): Promise<T[]>
 }
 ```
 
@@ -301,7 +307,7 @@ The transaction abstraction is particularly useful when several repositories par
 
 `onecore` defines generic repository contracts for CRUD and search operations.
 
-### CRUD
+### CRUDRepository
 
 ```ts
 export interface CRUDRepository<T, ID> {
@@ -327,12 +333,12 @@ Transactional operation:
 await repository.create(user, tx)
 ```
 
-### Search
+### SearchRepository
 
 ```ts
 export interface SearchRepository<T, F extends Filter> {
   search(
-    s: F,
+    filter: F,
     limit: number,
     offset?: number | string,
     fields?: string[],
@@ -365,7 +371,7 @@ export interface SearchResult<T> {
 
 This allows implementations to support result counts as well as cursor-style pagination.
 
-## Combined repositories
+## Repository
 
 CRUD and search repositories can be combined:
 
@@ -429,7 +435,7 @@ export class CRUDUseCase<T, ID> {
 }
 ```
 
-### Combined UseCase
+### UseCase
 
 For applications that need both CRUD and search operations:
 
@@ -503,10 +509,7 @@ export interface ErrorMessage {
 with:
 
 ```ts
-export type Result<T> =
-  | number
-  | T
-  | ErrorMessage[]
+export type Result<T> = number | T | ErrorMessage[]
 ```
 
 This allows an application layer to return structured field-level errors without coupling the service interface to a particular validation library.
@@ -520,10 +523,11 @@ Examples include:
 ```text
 Database
 ├── sql-core
-├── mysql2-core
 ├── postgres-kit
+├── mysql2-core
 ├── oracle-core
 ├── mssql-core
+├── cassandra-core 
 └── mongodb-kit
 
 Validation
@@ -535,6 +539,7 @@ Messaging
 ├── redis-messaging
 ├── rabbitmq-transport
 ├── activemq
+├── kafka-plus
 └── ibmmq-plus
 
 Cache
@@ -542,12 +547,12 @@ Cache
 └── redis-plus
 
 Other
+├── import-service
+├── export-kit
 ├── logger-core
 ├── health-service
-├── web-clients
 ├── locale-service
-├── import-service
-└── export-kit
+└── web-clients
 ```
 
 These packages can share the same contracts and metadata model while remaining independently implemented.
@@ -558,12 +563,12 @@ These packages can share the same contracts and metadata model while remaining i
 `onecore` defines the common contracts used by the ecosystem.
 
 ### Database
+* Statement
+* DB
+* Transaction
 * SearchRepository
 * CRUDRepository
 * Repository
-* Transaction
-* Statement
-* QueryBuilder
 
 Implemented by
 
@@ -575,8 +580,6 @@ Implemented by
 * cassandra-core
 * mongodb-kit
 
----
-
 ### Validation
 
 * Validator<T>
@@ -584,8 +587,6 @@ Implemented by
 Implemented by
 
 * validation-core
-
----
 
 ### Cache
 
@@ -595,8 +596,6 @@ Implemented by
 
 * cache-plus
 * redis-plus
-
----
 
 ### Message Queue
 
@@ -611,9 +610,9 @@ Implemented by
 * redis-messaging
 * nats-plus
 * rabbitmq-transport
-* ActiveMQ libraries
-
----
+* activemq
+* kafka-plus
+* ibmmq-plus
 
 ### Logging
 
@@ -623,8 +622,6 @@ Implemented by
 
 * logger-core
 
----
-
 ### Health Check
 
 * HealthChecker
@@ -632,8 +629,6 @@ Implemented by
 Implemented by
 
 * health-service
-
----
 
 ### HTTP
 
@@ -643,8 +638,6 @@ Implemented by
 Implemented by
 
 * web-clients
-
----
 
 ### Localization
 
@@ -674,17 +667,34 @@ Reusable classes such as `UseCase` are only included when they are actually impo
 
 This makes the package suitable for both backend and frontend projects.
 
-## Backend and frontend
+## Backend Support
 
-Backend applications can use `onecore` for:
+Infrastructure services often depend only on interfaces.
 
-* Repository contracts
-* Database transactions
+Examples include
+
 * Shared metadata
+* Database transactions
+* Repository contracts
 * Application use cases
-* Infrastructure interfaces
+* Message Queue services
+* Import services / Export services
+* Infrastructure interfaces: Logging, Cache, Validation...
 
-Frontend applications can use shared models and metadata without needing to import backend implementations.
+Since these projects do not use application-layer base classes, the generated JavaScript contains virtually no runtime code from `onecore`.
+
+## Frontend Support
+
+`onecore` works in frontend applications.
+
+React applications commonly use
+
+* Attribute
+* Locale
+* Currency
+* Validator interfaces
+
+without importing any backend service classes.
 
 For example:
 
@@ -697,6 +707,8 @@ import type {
 ```
 
 This allows a frontend and backend to share the same domain metadata and contracts.
+
+The final JavaScript bundle remains minimal because interfaces are removed during compilation and unused code is tree-shaken.
 
 ## Design principles
 
@@ -720,51 +732,16 @@ Transactions are passed explicitly to repository operations when multiple operat
 
 Keep shared contracts in TypeScript interfaces and keep runtime implementations small and reusable.
 
-## License
 
-MIT
-
-# Frontend Support
-
-`onecore` works in frontend applications.
-
-React applications commonly use
-
-* Attribute
-* Locale
-* Currency
-* Validator interfaces
-
-without importing any backend service classes.
-
-The final JavaScript bundle remains minimal because interfaces are removed during compilation and unused code is tree-shaken.
-
----
-
-# Backend Support
-
-Infrastructure services often depend only on interfaces.
-
-Examples include
-
-* Message Queue services
-* Import services
-* Export services
-* Background workers
-
-Since these projects do not use application-layer base classes, the generated JavaScript contains virtually no runtime code from `onecore`.
-
----
-
-# Sample Projects
+## Sample Projects
 
 The following sample applications demonstrate different ways of using `onecore`.
 
 ### CRUD Applications
 
-* [**sql-modular-sample**](https://github.com/source-code-template/sql-modular-sample) — SQL modular microservice using MySQL
-* [**sql-simple-modular-sample**](https://github.com/source-code-template/sql-simple-modular-sample) — SQL modular microservice using PosgreSQL
-* [**mongo-simple-modular-sample**](https://github.com/source-code-template/mongo-simple-modular-sample) — MongoDB modular microservice
+* [sql-modular-sample](https://github.com/source-code-template/sql-modular-sample) — SQL modular microservice using MySQL
+* [sql-simple-modular-sample](https://github.com/source-code-template/sql-simple-modular-sample) — SQL modular microservice using PosgreSQL
+* [mongo-simple-modular-sample](https://github.com/source-code-template/mongo-simple-modular-sample) — MongoDB modular microservice
 
 These projects extend the reusable CRUD and Search use-case classes.
 
@@ -794,21 +771,8 @@ These projects depend only on interfaces and the shared `Attribute` metadata mod
 
 These projects depend only on interfaces and the shared `Attribute` metadata model.
 
----
-
-# Design Principles
-
-* Interface-first architecture
-* Dependency inversion
-* Clean Architecture
-* Hexagonal Architecture
-* Tree-shakeable design
-* Shared metadata model
-* Framework independent
-* Enterprise ready
-
----
-
-# License
+## License
 
 MIT
+
+

@@ -56,27 +56,27 @@ export interface Writer<T, R, ID> {
 }
 */
 export interface SimpleConsumer<T, R> {
-  consume(handle: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
+  consume(process: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
 }
 export interface SimpleSubscriber<T, R> {
-  subscribe(handle: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
+  subscribe(process: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
 }
 export interface SimpleReceiver<T, R> {
-  receive(handle: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
+  receive(process: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
 }
 export interface SimpleReader<T, R> {
-  read(handle: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
+  read(process: (data: T, attributes?: StringMap, raw?: R) => Promise<number>): void;
 }
 
 export interface MessageConsumer<T, ID, R> {
   consume(data: Message<T, ID, R>): void;
 }
 export interface MessageSubscriber<T, ID, R> {
-  subscribe(handle: (data: Message<T, ID, R>) => Promise<number>): void;
+  subscribe(process: (data: Message<T, ID, R>) => Promise<number>): void;
 }
 export interface MessageReceiver<T, ID, R> {
-  receive(handle: (data: Message<T, ID, R>) => Promise<number>): void;
+  receive(process: (data: Message<T, ID, R>) => Promise<number>): void;
 }
 export interface MessageReader<T, ID, R> {
-  read(handle: (data: Message<T, ID, R>) => Promise<number>): void;
+  read(process: (data: Message<T, ID, R>) => Promise<number>): void;
 }

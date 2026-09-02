@@ -118,11 +118,15 @@ export interface Parser<T> {
 export interface Transformer<T> {
   transform: (data: string) => Promise<T>;
 }
+export interface ExportResult {
+  total: number
+  success: number
+}
 export interface ExportService {
-  export(ctx?: any): Promise<number>;
+  export(ctx?: any): Promise<ExportResult>;
 }
 export interface Exporter {
-  export(ctx?: any): Promise<number>;
+  export(ctx?: any): Promise<ExportResult>;
 }
 
 // tslint:disable-next-line:max-classes-per-file

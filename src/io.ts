@@ -27,3 +27,8 @@ export interface ErrorHandler<T> {
 export interface ExceptionHandler<S> {
   handleException(res: S, err: any, i?: number, filename?: string): void
 }
+
+export interface FileWriter<T> {
+  write(chunk: T): boolean
+  end(cb?: () => void): void
+}

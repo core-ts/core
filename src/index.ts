@@ -1,137 +1,135 @@
-export type DataType = 'ObjectId' | 'date' | 'datetime' | 'time'
-  | 'boolean' | 'number' | 'integer' | 'string' | 'text'
-  | 'object' | 'array' | 'binary'
-  | 'primitives' | 'booleans' | 'numbers' | 'integers' | 'strings' | 'dates' | 'datetimes' | 'times';
-export type FormatType = 'currency' | 'percentage' | 'email' | 'url' | 'phone' | 'fax' | 'ipv4' | 'ipv6';
-export type Operator = "=" | "like" | "!=" | "<>" | ">" | ">=" | "<" | "<="
+export * from './db';
 
-export interface Model {
-  name?: string;
-  attributes: Attributes;
-  source?: string;
-  table?: string;
-  collection?: string;
-  // for mongo lowcode
-  sort?: string;
-  geo?: string;
-  latitude?: string;
-  longitude?: string;
-}
-export interface Attribute {
-  name?: string;
-  field?: string;
-  column?: string;
-  type?: DataType;
-  format?: FormatType;
-  required?: boolean;
-  operator?: Operator;
-  default?: string|number|Date|boolean;
-  key?: boolean;
-  unique?: boolean;
-  enum?: string[] | number[];
-  q?: boolean;
-  noinsert?: boolean;
-  noupdate?: boolean;
-  nopatch?: boolean;
-  version?: boolean;
-  createdAt?: boolean;
-  updatedAt?: boolean;
-  length?: number;
-  min?: number | Date | string;
-  max?: number | Date | string;
-  gt?: number | Date | string;
-  lt?: number | Date | string;
-  precision?: number;
-  scale?: number;
-  exp?: RegExp | string;
-  code?: string;
-  noformat?: boolean;
-  ignored?: boolean;
-  jsonField?: string;
-  link?: string;
-  typeof?: Attributes;
-  true?: string|number;
-  false?: string|number;
-  noValidate?: boolean;
-  resource?: string;
-  getString?: (v: any) => string;
-}
-export interface Attributes {
-  [key: string]: Attribute;
-}
+export * from './formatter';
+export * from './metadata';
+export * from './cache';
+export * from './validator';
+export * from './loader';
+export * from './model';
+export * from './health';
+export * from './logger';
 
-export interface Filter {
-  page?: number;
-  limit: number;
-  fields?: string[];
-  sort?: string;
+export * from './io';
 
-  q?: string;
+import { GenericRepository, SearchRepository, GenericSearchRepository, Transaction } from './db';
+import { GenericSearchService, CRUDService } from './service';
+export * from './service';
+
+export * from './mail/model/AttachmentData';
+export * from './mail/model/TrackingSettings';
+export * from './mail/model/EmailData';
+export * from './mail/model/MailData';
+export * from './mail/model/MailContent';
+export * from './mail/model/PersonalizationData';
+export * from './mail/model/MailSettings';
+export * from './mail/model/ASMOptions';
+export * from './mail/config';
+
+export * from './location';
+export * from './job';
+export * from './video';
+
+export type DeleteFile = (name: string, directory?: string) => Promise<boolean>;
+export type Delete = (delFile: DeleteFile, url: string) => Promise<boolean>;
+export type BuildUrl = (name: string, directory?: string) => string;
+export type Generate = () => string;
+export type SaveValues = (values: string[]) => Promise<number>;
+export type SaveStrings = (values: string[]) => Promise<number>;
+export interface QueryService<T> {
+  query(keyword: string, max?: number): Promise<T[]>;
 }
-export interface SearchResult<T> {
-  list: T[];
-  total?: number;
-  next?: string;
+export type Get<T> = (keyword: string, max?: number) => Promise<T[]>;
+export type Load<T> = (keyword: string, max?: number) => Promise<T[]>;
+export type Log = (msg: string) => void;
+export type LogFunc = Log;
+
+import { Attributes } from './metadata';
+import { Filter, SearchResult } from './model';
+
+export type Search<T, F> = (s: F, limit: number, page?: number | string, fields?: string[]) => Promise<SearchResult<T>>;
+export type SearchFunc<T, F> = Search<T, F>;
+
+export interface Notification {
+  id?: string
+  sender: string
+  receiver: string
+  url?: string
+  message: string
+}
+export interface NotificationPort {
+  push(notification: Notification): Promise<number>
+  pushNotifications(notifications: Notification[]): Promise<number>
+}
+export interface NotificationRepository {
+  push(notification: Notification): Promise<number>
+  pushNotifications(notifications: Notification[]): Promise<number>
 }
 
-
-export interface Statement {
-  query: string;
-  params?: any[];
+export interface KeypairResult {
+  rsaEncrypted: string;
+  data: {
+    shareKey: string;
+    salt: string;
+  };
 }
-interface StringMap {
-  [key: string]: string;
+export interface CryptoOption {
+  isEncoded64?: boolean;
+  convertKey2Bytes?: boolean;
 }
-export interface Executor {
-  driver: string
-  param(i: number): string
-  execute(sql: string, args?: any[]): Promise<number>
-  executeBatch(statements: Statement[], firstSuccess?: boolean): Promise<number>
-  query<T>(sql: string, args?: any[], m?: StringMap, bools?: Attribute[]): Promise<T[]>
+export interface CryptoPort {
+  exchangeKeypair: (pk: string) => Promise<KeypairResult>;
+  encryptAESMessage: (aesKey: string, salt: string, dataJSON: string,  options?: CryptoOption) => Promise<string>;
+  decryptAESMessage: <T>(messageEncrypted: string, clientShKey: string, clientSalt: string, options?: CryptoOption) => Promise<T | string>;
+  encrypt: (pk: any, message: string) => string;
+  decrypt: (sk: any, data: string) => string;
+  encryptAES: (key: string, message: string) => string;
+  decryptAES: (key: string, ciphertext: string, iv: string) => string;
+  hashHMAC: (key: string, data: string) => string;
+  hashData: (text: string) => string;
 }
-export interface Transaction extends Executor {
-  commit(): Promise<void>
-  rollback(): Promise<void>
-}
-export interface DB extends Executor {
-  beginTransaction(): Promise<Transaction>
-}
-
-export interface SearchRepository<T, F extends Filter> {
-  search(s: F, limit: number, offset?: number|string, fields?: string[], tx?: Transaction): Promise<SearchResult<T>>;
-}
-export interface CRUDRepository<T, ID> {
-  load(id: ID, tx?: Transaction): Promise<T | null>;
-  create(obj: T, tx?: Transaction): Promise<number>;
-  update(obj: T, tx?: Transaction): Promise<number>;
-  patch(obj: Partial<T>, tx?: Transaction): Promise<number>;
-  delete(id: ID, tx?: Transaction): Promise<number>;
-}
-export interface Repository<T, ID, F extends Filter>
-  extends CRUDRepository<T, ID>, SearchRepository<T, F> {
+export interface CryptoService {
+  exchangeKeypair: (pk: string) => Promise<KeypairResult>;
+  encryptAESMessage: (aesKey: string, salt: string, dataJSON: string,  options?: CryptoOption) => Promise<string>;
+  decryptAESMessage: <T>(messageEncrypted: string, clientShKey: string, clientSalt: string, options?: CryptoOption) => Promise<T | string>;
+  encrypt: (pk: any, message: string) => string;
+  decrypt: (sk: any, data: string) => string;
+  encryptAES: (key: string, message: string) => string;
+  decryptAES: (key: string, ciphertext: string, iv: string) => string;
+  hashHMAC: (key: string, data: string) => string;
+  hashData: (text: string) => string;
 }
 
-export interface ErrorMessage {
-  field: string;
-  code: string;
-  param?: string|number|Date;
-  message?: string;
+export interface ExceptionHandler {
+  handleException(rs: string, err: any, i?: number, filename?: string): void;
 }
-export type Result<T> = number | T | ErrorMessage[];
-export interface SearchService<T, F extends Filter> {
-  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>>;
+export interface ImportResult {
+  total: number;
+  success: number;
 }
-export interface CRUDService<T, ID> {
-  load(id: ID): Promise<T|null>;
-  create(obj: T): Promise<Result<T>>;
-  update(obj: T): Promise<Result<T>>;
-  patch(obj: Partial<T>): Promise<Result<T>>;
-  delete(id: ID): Promise<number>;
+export interface ImportService {
+  import(): Promise<ImportResult>;
 }
-export interface Service<T, ID, F extends Filter>
-  extends CRUDService<T, ID>, SearchService<T, F> {
+export interface Importer {
+  import(): Promise<ImportResult>;
+}
+export interface Parser<T> {
+  parse: (data: string) => Promise<T>;
+}
+export interface Transformer<T> {
+  transform: (data: string) => Promise<T>;
+}
+export interface ExportResult {
+  total: number
+  success: number
+}
+export interface ExportService {
+  export(ctx?: any): Promise<ExportResult>;
+}
+export interface Exporter {
+  export(ctx?: any): Promise<ExportResult>;
 }
 
+// tslint:disable-next-line:max-classes-per-file
 export class SearchUseCase<T, F extends Filter> {
   constructor(protected repository: SearchRepository<T, F>) {
     this.search = this.search.bind(this);
@@ -140,46 +138,19 @@ export class SearchUseCase<T, F extends Filter> {
     return this.repository.search(s, limit, page, fields);
   }
 }
+export const SearchManager = SearchUseCase
 
-export class CRUDUseCase<T, ID> implements CRUDService<T, ID> {
-  constructor(protected repository: CRUDRepository<T, ID>) {
-    this.load = this.load.bind(this);
-    this.create = this.create.bind(this);
-    this.update = this.update.bind(this);
-    this.patch = this.patch.bind(this);
-    this.delete = this.delete.bind(this);
-  }
-  load(id: ID): Promise<T | null> {
-    return this.repository.load(id);
-  }
-  create(obj: T): Promise<number> {
-    return this.repository.create(obj);
-  }
-  update(obj: T): Promise<number> {
-    return this.repository.update(obj);
-  }
-  patch(obj: Partial<T>): Promise<number> {
-    return this.repository.patch(obj);
-  }
-  delete(id: ID): Promise<number> {
-    return this.repository.delete(id);
-  }
+interface WriterRepo<T> {
+  create(obj: T, ctx?: Transaction): Promise<number>;
+  update(obj: T, ctx?: Transaction): Promise<number>;
+  patch(obj: Partial<T>, ctx?: Transaction): Promise<number>;
 }
-
-export class UseCase<T, ID, F extends Filter> {
-  constructor(protected repository: Repository<T, ID, F>) {
-    this.search = this.search.bind(this);
-    this.load = this.load.bind(this);
+// tslint:disable-next-line:max-classes-per-file
+export class Writer<T> {
+  constructor(protected repository: WriterRepo<T>) {
     this.create = this.create.bind(this);
     this.update = this.update.bind(this);
     this.patch = this.patch.bind(this);
-    this.delete = this.delete.bind(this);
-  }
-  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
-    return this.repository.search(s, limit, page, fields);
-  }
-  load(id: ID): Promise<T | null> {
-    return this.repository.load(id);
   }
   create(obj: T): Promise<number> {
     return this.repository.create(obj);
@@ -190,7 +161,81 @@ export class UseCase<T, ID, F extends Filter> {
   patch(obj: Partial<T>): Promise<number> {
     return (this.repository.patch ? this.repository.patch(obj) : Promise.resolve(-1));
   }
+}
+
+interface SearchWriterRepo<T, F extends Filter> {
+  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>>
+  create(obj: T, ctx?: Transaction): Promise<number>;
+  update(obj: T, ctx?: Transaction): Promise<number>;
+  patch(obj: Partial<T>, ctx?: Transaction): Promise<number>;
+}
+// tslint:disable-next-line:max-classes-per-file
+export class SearchWriter<T, F extends Filter> extends Writer<T> {
+  constructor(protected repository: SearchWriterRepo<T, F>) {
+    super(repository)
+    this.search = this.search.bind(this);
+  }
+  search(filter: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
+    return this.repository.search(filter, limit, page, fields);
+  }
+}
+
+// tslint:disable-next-line:max-classes-per-file
+export class UseCase<T, ID, F extends Filter> extends SearchWriter<T, F> implements GenericSearchService<T, ID, number, F> {
+  constructor(protected repository: GenericSearchRepository<T, ID, F>) {
+    super(repository);
+    this.metadata = this.metadata.bind(this);
+    this.keys = this.keys.bind(this);
+    this.load = this.load.bind(this);
+    this.delete = this.delete.bind(this);
+  }
+  metadata(): Attributes|undefined {
+    return (this.repository.metadata ? this.repository.metadata() : undefined);
+  }
+  keys(): string[] {
+    return (this.repository.keys ? this.repository.keys() : []);
+  }
+  load(id: ID): Promise<T | null> {
+    return this.repository.load(id);
+  }
   delete(id: ID): Promise<number> {
     return this.repository.delete(id);
   }
+}
+
+// tslint:disable-next-line:max-classes-per-file
+export class CRUDUseCase<T, ID> extends Writer<T> implements CRUDService<T, ID, number> {
+  constructor(protected repository: GenericRepository<T, ID>) {
+    super(repository);
+    this.metadata = this.metadata.bind(this);
+    this.keys = this.keys.bind(this);
+    this.load = this.load.bind(this);
+    this.delete = this.delete.bind(this);
+  }
+  metadata(): Attributes | undefined {
+    return (this.repository.metadata ? this.repository.metadata() : undefined);
+  }
+  keys(): string[] {
+    return (this.repository.keys ? this.repository.keys() : []);
+  }
+  load(id: ID): Promise<T | null> {
+    return this.repository.load(id);
+  }
+  delete(id: ID): Promise<number> {
+    return this.repository.delete(id);
+  }
+}
+export const GenericUseCase = CRUDUseCase
+export const GenericManager = CRUDUseCase
+export const CRUDManager = CRUDUseCase
+
+export interface SavedRepository<UID, ID> {
+  isSaved(userId: UID, id: ID): Promise<boolean>
+  save(userId: UID, id: ID): Promise<number>
+  remove(userId: UID, id: ID): Promise<number>
+  count(userId: UID): Promise<number>
+}
+export interface FollowRepository<ID> {
+  follow(id: ID, target: ID): Promise<number>
+  unfollow(id: ID, target: ID): Promise<number>
 }

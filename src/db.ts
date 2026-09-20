@@ -35,7 +35,7 @@ export interface ViewRepository<T, ID> {
   load(id: ID, tx?: Transaction): Promise<T | null>;
 }
 export interface SearchRepository<T, F extends Filter> {
-  search(filter: F, limit: number, offset?: number|string, fields?: string[], tx?: Transaction): Promise<SearchResult<T>>;
+  search(filter: F, limit: number, page?: number, fields?: string[], tx?: Transaction): Promise<SearchResult<T>>;
 }
 export interface ViewSearchRepository<T, ID, F extends Filter>
   extends ViewRepository<T, ID>, SearchRepository<T, F> {
@@ -72,7 +72,7 @@ export interface ViewPort<T, ID> {
   load(id: ID, tx?: Transaction): Promise<T | null>;
 }
 export interface SearchPort<T, F extends Filter> {
-  search(s: F, limit: number, offset?: number|string, fields?: string[], tx?: Transaction): Promise<SearchResult<T>>;
+  search(s: F, limit: number, page?: number, fields?: string[], tx?: Transaction): Promise<SearchResult<T>>;
 }
 export interface ViewSearchPort<T, ID, F extends Filter>
   extends ViewPort<T, ID>, SearchPort<T, F> {

@@ -134,7 +134,7 @@ export class SearchUseCase<T, F extends Filter> {
   constructor(protected repository: SearchRepository<T, F>) {
     this.search = this.search.bind(this);
   }
-  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
+  search(s: F, limit: number, page?: number, fields?: string[]): Promise<SearchResult<T>> {
     return this.repository.search(s, limit, page, fields);
   }
 }
@@ -164,7 +164,7 @@ export class Writer<T> {
 }
 
 interface SearchWriterRepo<T, F extends Filter> {
-  search(s: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>>
+  search(s: F, limit: number, page?: number, fields?: string[]): Promise<SearchResult<T>>
   create(obj: T, ctx?: Transaction): Promise<number>;
   update(obj: T, ctx?: Transaction): Promise<number>;
   patch(obj: Partial<T>, ctx?: Transaction): Promise<number>;
@@ -175,7 +175,7 @@ export class SearchWriter<T, F extends Filter> extends Writer<T> {
     super(repository)
     this.search = this.search.bind(this);
   }
-  search(filter: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>> {
+  search(filter: F, limit: number, page?: number, fields?: string[]): Promise<SearchResult<T>> {
     return this.repository.search(filter, limit, page, fields);
   }
 }

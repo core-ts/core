@@ -9,7 +9,7 @@ export interface ViewService<T, ID> {
 
 export interface SearchService<T, F extends Filter> {
   keys?(): string[];
-  search(filter: F, limit: number, page?: number|string, fields?: string[]): Promise<SearchResult<T>>;
+  search(filter: F, limit: number, page?: number, fields?: string[]): Promise<SearchResult<T>>;
 }
 
 export interface Query<T, ID, F extends Filter> extends SearchService<T, F> {

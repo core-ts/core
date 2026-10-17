@@ -74,28 +74,6 @@ export interface Article {
   savedAt?: Date
 }
 
-export interface User {
-  id: string
-  username: string
-  email?: string
-  phone?: string
-  dateOfBirth?: Date
-  displayName?: string
-  status?: string
-  imageURL?: string
-  coverURL?: string
-  headline?: string
-  bio?: string
-  website?: string
-  occupation?: string
-  company?: string
-  location?: string
-
-  followedAt?: Date
-  followerCount?: number
-  followingCount?: number
-}
-
 export interface Company {
   id: string
   slug: string

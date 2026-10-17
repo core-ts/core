@@ -140,7 +140,7 @@ export interface DiffModel<T, ID> {
   origin?: T;
   value: T;
 }
-export interface User {
+export interface UserInfo {
   id: string;
   name?: string;
   email?: string;
@@ -153,7 +153,7 @@ export interface History<T> {
   time: Date
   action: string
   data: T
-  user: User;
+  user: UserInfo;
   note?: string;
 }
 

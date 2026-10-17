@@ -1,41 +1,10 @@
-import { DateRange, Filter, SearchResult, TimeRange } from "./model";
+import { DateRange, Filter, TimeRange } from "./model";
 
 export interface Attachment {
   originalFilename: string;
   filename: string;
   url: string;
   size: number;
-}
-
-export interface Article {
-  id: string
-  slug: string
-  title: string
-  description?: string
-  publishedAt?: Date
-  tags?: string[]
-  thumbnail?: string
-  status?: string
-  createdAt?: Date
-  authorId?: string
-  savedAt?: Date
-}
-export interface ArticleFilter extends Filter {
-  id?: string
-  slug?: string
-  title?: string
-  description?: string
-  status?: string
-  publishedAt: TimeRange
-  tags?: string[]
-  authorId?: string
-  userId?: string
-  isSaved?: boolean
-}
-export interface ArticleRepository {
-  search(filter: ArticleFilter, limit: number, page?: number, fields?: string[]): Promise<SearchResult<Article>>
-  load(slug: string, userId?: string): Promise<Article | null>
-  getIdBySlug(slug: string): Promise<string>
 }
 
 export interface Achievement {
@@ -46,17 +15,7 @@ export interface Skill {
   skill: string;
   hirable: boolean;
 }
-export interface UserFilter extends Filter {
-  userId?: string;
-  username?: string;
-  email?: string;
-  displayName?: string;
-  dateOfBirth?: DateRange;
-  status?: string[]|string;
-  interests?: string[];
-  skills?: Skill[];
-  achievements?: Achievement[];
-}
+
 export interface RoleFilter extends Filter {
   roleId?: string;
   roleName?: string;
@@ -91,35 +50,50 @@ export interface ReviewCommentFilter extends Filter {
   time?: DateRange;
   updatedAt?: DateRange;
 }
-export interface Info {
-  id: string;
-  rate: number;
-  rate1: number;
-  rate2: number;
-  rate3: number;
-  rate4: number;
-  rate5: number;
-  count: number;
-  score: number;
+
+export interface Rate {
+  rate: number
+  rate1: number
+  rate2: number
+  rate3: number
+  rate4: number
+  rate5: number
 }
-export interface Info10 {
-  id: string;
-  rate: number;
-  rate1: number;
-  rate2: number;
-  rate3: number;
-  rate4: number;
-  rate5: number;
-  rate6: number;
-  rate7: number;
-  rate8: number;
-  rate9: number;
-  rate10: number;
-  count: number;
-  score: number;
+
+export interface Article {
+  id: string
+  slug: string
+  title: string
+  description?: string
+  publishedAt?: Date
+  tags?: string[]
+  thumbnail?: string
+  status?: string
+  createdAt?: Date
+  authorId?: string
+  savedAt?: Date
 }
-export interface InfoRepository<ID> {
-  exist(id: ID, ctx?: any): Promise<boolean>;
+
+export interface User {
+  id: string
+  username: string
+  email?: string
+  phone?: string
+  dateOfBirth?: Date
+  displayName?: string
+  status?: string
+  imageURL?: string
+  coverURL?: string
+  headline?: string
+  bio?: string
+  website?: string
+  occupation?: string
+  company?: string
+  location?: string
+
+  followedAt?: Date
+  followerCount?: number
+  followingCount?: number
 }
 
 export interface Company {
@@ -153,8 +127,11 @@ export interface Job {
   skills?: string[]
   minSalary?: number
   maxSalary?: number
-  companyId?: string
   status: string
+  companyId?: string
+  companyName?: string
+  logo?: string
+  savedAt?: Date
 }
 export interface JobFilter extends Filter {
   id?: string
@@ -169,4 +146,6 @@ export interface JobFilter extends Filter {
   applicantCount?: number
   companyId?: string
   status?: string
+  userId?: string
+  isSaved?: boolean
 }

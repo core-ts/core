@@ -20,6 +20,9 @@ export interface Executor {
   execute(sql: string, args?: any[]): Promise<number>
   executeBatch(statements: Statement[], requireFirstAffected?: boolean): Promise<number>
   query<T>(sql: string, args?: any[], m?: StringMap, bools?: Attribute[]): Promise<T[]>
+  queryOne<T>(sql: string, args?: any[], m?: StringMap, bools?: Attribute[]): Promise<T | null>
+  executeScalar<T>(sql: string, args?: any[]): Promise<T | null>
+  count(sql: string, args?: any[]): Promise<number>
 }
 export interface Transaction extends Executor {
   commit(): Promise<void>

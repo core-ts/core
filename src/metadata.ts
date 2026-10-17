@@ -37,6 +37,8 @@ export interface Attribute {
   createdAt?: boolean;
   updatedAt?: boolean;
   length?: number;
+  eq?: number | Date | string;
+  ne?: number | Date | string;
   min?: number | Date | string;
   max?: number | Date | string;
   gt?: number | Date | string;

@@ -16,6 +16,13 @@ export interface Skill {
   hirable: boolean;
 }
 
+export interface Role {
+  roleId: string
+  roleName: string
+  status: string
+  remark: string
+  privileges?: string[]
+}
 export interface RoleFilter extends Filter {
   roleId?: string;
   roleName?: string;
@@ -51,7 +58,7 @@ export interface ReviewCommentFilter extends Filter {
   updatedAt?: DateRange;
 }
 
-export interface Rate {
+export interface RateSummary {
   rate: number
   rate1: number
   rate2: number

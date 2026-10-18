@@ -1,6 +1,6 @@
 {
   "name": "onecore",
-  "version": "0.6.14",
+  "version": "0.6.15",
   "description": "onecore",
   "main": "./lib/index.js",
   "types": "./src/index.ts",
@@ -22,6 +22,7 @@
   "keywords": [
     "one",
     "core",
-    "onecore"
+    "onecore",
+    "one-core"
   ]
 }

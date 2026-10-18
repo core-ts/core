@@ -46,7 +46,7 @@ export type LogFunc = Log;
 import { Attributes } from './metadata';
 import { Filter, SearchResult } from './model';
 
-export type Search<T, F> = (s: F, limit: number, page?: number | string, fields?: string[]) => Promise<SearchResult<T>>;
+export type Search<T, F> = (filter: F, limit: number, page?: number, fields?: string[]) => Promise<SearchResult<T>>;
 export type SearchFunc<T, F> = Search<T, F>;
 
 export interface Notification {
